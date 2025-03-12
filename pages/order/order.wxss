@@ -1,0 +1,187 @@
+/* 页面整体 */
+.container1 {
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+  padding: 10px;
+}
+
+/* 费用卡片 */
+.payment-card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.name-wrap{
+  display: flex;
+  flex-direction: column;
+}
+/* 费用标题 & 状态 */
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* 待支付 & 已支付徽章 */
+.due-badge {
+  font-size: 12px;
+  width: 50px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px 5px 0 0;
+}
+.date-wrap{
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 0 0 5px 5px;
+}
+.date1{
+  margin-top: 5px;
+  font-size: 15px;
+  line-height: 9px;
+  font-weight: bold;
+}
+.date2{
+  font-size: 10px;
+  color:#726f6f;
+}
+.due {
+  padding:4px 3px;
+  background: #684edf;
+}
+
+.paid {
+  padding:4px 3px;
+  background: gray;
+}
+
+.location {
+  font-size: 12px;
+  color: rgb(146, 146, 146);
+}
+.time-wrap{
+  background-color: #f3f2f2;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-evenly;
+}
+.time-wrap-due{
+  background-color: #e9e6f8;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-evenly;
+}
+.bridge-wrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bridge{
+  line-height: 10px;
+  color: rgb(146, 146, 146);
+}
+.total-time{
+  font-size: 13px;
+  color: rgb(146, 146, 146);
+}
+.start-wrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.time{
+  font-size: 20px;
+  font-weight: bold;
+}
+.time-due{
+  color: #684edf;
+}
+.date{
+  font-size: 10px;
+}
+.date-due{
+  color: #a090eb;
+}
+.bottom-container{
+  display: flex;
+  justify-content: space-between;
+}
+.amount-wrap{
+  display: flex;
+  flex-direction: column;
+}
+/* 金额 */
+.amount {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+.due-in {
+  font-size: 12px;
+  color: gray;
+}
+
+/* 按钮 & 状态 */
+.actions {
+  margin-top: 25px;
+  display: flex;
+  gap: 10px;
+}
+
+.cancel-btn,
+.check-in-btn {
+  width: 90px !important; 
+  height: 30px !important;
+  padding: 0px 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.cancel-btn {
+  background-color: #f77e7e;
+  color: white;
+}
+
+.check-in-btn {
+  background-color: #b0aafd;
+  color: white;
+}
+
+.paid-text {
+  font-size: 14px;
+  color: green;
+  font-weight: bold;
+}
+.overdue-text{
+  font-size: 14px;
+  color: red;
+  font-weight: bold;
+}
+/* 参考编号 */
+.ref-no {
+  font-size: 12px;
+  color: gray;
+  margin-top: 5px;
+}

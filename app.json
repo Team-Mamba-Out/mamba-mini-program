@@ -1,14 +1,43 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/message/message",
+    "pages/order/order",
+    "pages/profile/profile",
+    "pages/roomDetails/roomDetails",
+    "pages/roomBooking/roomBooking",
+    "pages/messageContent/messageContent",
     "pages/logs/logs"
   ],
+  "usingComponents": {
+    "van-tabbar": "@vant/weapp/tabbar/index",
+    "van-tabbar-item": "@vant/weapp/tabbar-item/index",
+    "van-image": "@vant/weapp/image/index",
+    "van-datetime-picker": "@vant/weapp/datetime-picker/index",
+    "van-popup": "@vant/weapp/popup/index"
+  },
+  "tabBar": {
+    "custom": true,
+    "list": [
+      {
+        "pagePath": "pages/index/index"
+      },
+      {
+        "pagePath": "pages/message/message"
+      },
+      {
+        "pagePath": "pages/order/order"
+      },
+      {
+        "pagePath": "pages/profile/profile"
+      }
+    ]
+  },
   "window": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "Weixin",
     "navigationBarBackgroundColor": "#ffffff"
   },
-  "style": "v2",
   "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"

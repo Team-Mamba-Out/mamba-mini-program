@@ -1,0 +1,29 @@
+<!--pages/message/message.wxml-->
+<view class="container1">
+  <!-- 消息列表 -->
+  <scroll-view class="inbox-list" scroll-y>
+    <block wx:for="{{messages}}" wx:key="id">
+      <navigator class="message-container  {{item.deleting ? 'message-container-deleting' : ''}}" hover-class="none" data-id="{{item.id}}" bind:tap="navigateToContent">
+        <view class="message {{item.expanded ? 'message-expanded' : ''}} " style="transform: translateX({{item.offset}}px);" data-index="{{index}}" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
+          <view class="isRead" wx:if="{{item.isRead}}"></view>
+          <view class="icon" style="background-color: {{item.iconColor}}">{{item.icon}}</view>
+          <view class="message-content">
+            <view class="title">{{item.title}}</view>
+            <view class="description">{{item.description}}</view>
+            <view class="timestamp">{{item.timestamp}}</view>
+          </view>
+        </view>
+        <view class="delete-btn" data-index="{{index}}" bindtap="deleteMessage">
+          <image class="delete-icon" src="/img/delete.png" mode="" />
+        </view>
+      </navigator>
+    </block>
+  </scroll-view>
+</view>
+
+<van-tabbar active="{{ active }}" active-color="#674ed4" inactive-color="#919191" bind:change="onChange">
+  <van-tabbar-item name="index" icon="wap-home">Home</van-tabbar-item>
+  <van-tabbar-item name="message" icon="comment">Message</van-tabbar-item>
+  <van-tabbar-item name="order" icon="todo-list">Order</van-tabbar-item>
+  <van-tabbar-item name="profile" icon="contact">Profile</van-tabbar-item>
+</van-tabbar>

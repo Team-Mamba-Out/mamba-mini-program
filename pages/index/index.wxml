@@ -1,27 +1,118 @@
-<!--index.wxml-->
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-        <view wx:else> 请使用2.10.4及以上版本基础库 </view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      </block>
+<view class="home-title">
+  <image class="logo" src="../../assets/images/logo.png" mode="aspectFit"></image>
+  <text class="title-text">Classroom <br /> Reservation</text>
+</view>
+
+<view class="container">
+  <view class="select-container">
+    <picker mode="selector" range="{{deviceCategories}}" bindchange="onCategoryChange1" class="selector" style="margin-left: 5px;">
+      <view class="select-box">
+        <text class="select-text">{{selectedDevice}}</text>
+        <text class="icon">▼</text>
+      </view>
+    </picker>
+    <picker mode="selector" range="{{capacityCategories}}" bindchange="onCategoryChange2" style="margin-left: 5px;" class="selector">
+      <view class="select-box">
+        <text class="select-text">{{selectedCapacity}}</text>
+        <text class="icon">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <wxs src="../../utils/formateDate.wxs" module="format" />
+
+  <view class="select-container" style="margin-top: 15px; margin-bottom: -15px;">
+    <text class="time-prompt" style="margin-left: -5px;">From</text>
+    <view bindtap="showStartDateTimePicker" class="datetime-picker" style="width: 45%;">
+      <view class="select-box">
+        <text class="select-text">{{ format.formatDate(startDateTime) }}</text>
+        <text class="icon">▼</text>
+      </view>
     </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
+
+    <text class="time-prompt" style="margin-left: -10px;">to</text>
+    <view bindtap="showEndDateTimePicker" class="datetime-picker" style="width: 45%;">
+      <view class="select-box">
+        <text class="select-text">{{ format.formatDate(endDateTime) }}</text>
+        <text class="icon">▼</text>
+      </view>
     </view>
   </view>
-</scroll-view>
+
+  <!-- 开始时间选择器弹出层 -->
+  <van-popup show="{{ showStartDateTimePickerVisible }}" position="bottom" custom-style="height: 60%;" bind:close="onStartDateTimeClose">
+    <van-datetime-picker type="datetime" value="{{ startDateTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" min-hour="8" max-hour="22" bind:input="onStartDateTimeInput" show-toolbar title="Pick Start Time" confirm-button-text="Confirm" cancel-button-text="Cancel" filter="{{ filter }}" bind:confirm="onStartDateTimeConfirm" bind:cancel="onStartDateTimeCancel" />
+  </van-popup>
+
+  <!-- 结束时间选择器弹出层 -->
+  <van-popup show="{{ showEndDateTimePickerVisible }}" position="bottom" custom-style="height: 60%;" bind:close="onEndDateTimeClose">
+    <van-datetime-picker type="datetime" value="{{ endDateTime }}" min-date="{{ endMinDate }}" max-date="{{ maxDate }}" min-hour="8" max-hour="22" bind:input="onEndDateTimeInput" show-toolbar title="Pick End Time" confirm-button-text="Confirm" cancel-button-text="Cancel" filter="{{ filter }}" bind:confirm="onEndDateTimeConfirm" bind:cancel="onEndDateTimeCancel" />
+  </van-popup>
+
+
+  <view class="rooms">
+    <view class="room-category" wx:if="{{activitiesRooms.length > 0}}">
+      <view class="category-title">Activities Rooms</view>
+      <view class="room-list">
+        <view class="card" bindtap="goToDetails" wx:for="{{activitiesRooms}}" wx:key="id" data-id="{{item.id}}">
+          <view class="left-section">
+            <image class="card-image" src="{{item.url}}" />
+          </view>
+          <view class="right-section">
+            <view class="card-title">{{item.roomName}}</view>
+            <view class="status-block">
+              <view class="live-tag">{{item.isBusy ? 'Busy' : 'Available'}}</view>
+            </view>
+            <!-- <view class="card-capacity">Capacity: {{item.capacity}}</view> -->
+            <view class="card-location">{{item.location}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="room-category" wx:if="{{meetingRooms.length > 0}}">
+      <view class="category-title">Meeting Rooms</view>
+      <view class="room-list">
+        <view class="card" bindtap="goToDetails" wx:for="{{meetingRooms}}" wx:key="id" data-id="{{item.id}}">
+          <view class="left-section">
+            <image class="card-image" src="{{item.url}}" />
+          </view>
+          <view class="right-section">
+            <view class="card-title">{{item.roomName}}</view>
+            <view class="status-block">
+              <view class="live-tag">{{item.isBusy ? 'Busy' : 'Available'}}</view>
+            </view>
+            <view class="card-location">{{item.location}}</view>
+            <!-- <view class="card-capacity">Capacity: {{item.capacity}}</view> -->
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="room-category" wx:if="{{teachingRooms.length > 0}}">
+      <view class="category-title">Teaching Rooms</view>
+      <view class="room-list">
+        <view class="card" bindtap="goToDetails" wx:for="{{teachingRooms}}" wx:key="id" data-id="{{item.id}}">
+          <view class="left-section">
+            <image class="card-image" src="{{item.url}}" />
+          </view>
+          <view class="right-section">
+            <view class="card-title">{{item.roomName}}</view>
+            <view class="status-block">
+              <view class="live-tag">{{item.isBusy ? 'Busy' : 'Available'}}</view>
+            </view>
+            <!-- <view class="card-capacity">Capacity: {{item.capacity}}</view> -->
+            <view class="card-location">{{item.location}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <van-tabbar active="{{ active }}" active-color="#674ed4" inactive-color="#919191" bind:change="onChange">
+    <van-tabbar-item name="index" icon="wap-home">Home</van-tabbar-item>
+    <van-tabbar-item name="message" icon="comment">Message</van-tabbar-item>
+    <van-tabbar-item name="order" icon="todo-list">Order</van-tabbar-item>
+    <van-tabbar-item name="profile" icon="contact">Profile</van-tabbar-item>
+  </van-tabbar>
+</view>
