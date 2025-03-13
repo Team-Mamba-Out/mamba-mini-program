@@ -28,7 +28,7 @@ Page({
   loadScheduleDataFromBackend(roomId) {
     console.log(roomId);
     wx.request({
-      url: `http://localhost:8080/rooms/getBusyTime?id=${roomId}`,
+      url: `http://localhost:8080/rooms/getRecordPeriods/${roomId}`,
       method: 'GET',
       success: (res) => {
         if (res.data.code === 200) {
