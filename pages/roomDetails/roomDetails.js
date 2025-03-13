@@ -23,6 +23,9 @@ Page({
     // 假设你已经通过 wx.request 获取了后端返回的时间段数据
     this.loadScheduleDataFromBackend(this.data.room.id);
   },
+  onShow() {
+    this.loadScheduleDataFromBackend(this.data.room.id);
+  },
 
   // 从后端加载并转换日程数据
   loadScheduleDataFromBackend(roomId) {
