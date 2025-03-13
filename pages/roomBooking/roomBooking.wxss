@@ -1,0 +1,251 @@
+/* pages/roomBooking/roomBooking.wxss */
+.book-heading {
+  font-weight: bold;
+  width: 100%;
+  color: #fff;
+  background: linear-gradient(90deg, #684edf, #a090eb); /* 渐变紫色背景 */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+  height: 15vh;
+  display: flex;
+  align-items: center;
+  font-size: 60rpx;
+  padding-left: 20rpx;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+/* pages/booking/booking.wxss */
+.container {
+  padding: 24rpx;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Main container for the header */
+.card-container {
+  display: flex;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin: 5px auto;
+  max-width: 600px;
+  margin-bottom: 20px;  
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.card-image {
+  width: 130px;
+  height: 150px;
+  background: #f0f2f5;
+  position: relative;
+}
+
+.image-content {
+  width: 100%;
+  height: 100%;
+}
+
+.card-content {
+  flex: 1;
+  padding: 10px;
+}
+
+.card-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+}
+
+.info-text {
+  font-size: 25rpx;
+  color: rgb(139, 138, 138);
+  margin-left: 6rpx;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.booking-text{
+  font-size: 28rpx;
+  color: #333;
+  margin-left: 6rpx;
+  border-bottom: 1px solid #333;
+  margin-bottom: 12px;
+}
+
+.tag-container {
+  flex-direction: row;
+}
+
+.capacity-tag,
+.multimedia-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 16px;
+  background: #f5f5f5;
+  margin-right: 8px;
+  font-size: 12px;
+}
+
+.capacity-tag icon,
+.multimedia-tag icon {
+  margin-right: 4px;
+}
+
+
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+  margin-bottom: 10vh; /* 增加底部间距 */
+}
+
+.time-slot {
+  height: 140rpx;
+  background: #ffffff;
+  border: 2rpx solid #e9ecef;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.time-label {
+  font-size: 28rpx;
+  color: #495057;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-top: 12rpx;
+  background: transparent;
+}
+
+/* 禁用状态 */
+.time-slot.disabled {
+  background: repeating-linear-gradient(
+    -45deg,
+    #fff,
+    #fff 4rpx,
+    #f1f5f9 4rpx,
+    #f1f5f9 8rpx
+  );
+  opacity: 0.6;
+  border-color: #f8f4ff;
+}
+.time-slot.disabled .time-label {
+  color: #adb5bd;
+}
+.time-slot.disabled .status-dot {
+  background: #ff9292;
+}
+
+/* 操作按钮 */
+.action-box {
+  position: fixed;
+  bottom: 40rpx;
+  left: 24rpx;
+  right: 24rpx;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.submit-btn {
+  width: 100%;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+  background-color: #684edf; /* 主紫色 */
+  color: #fff;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+/* 提交按钮禁用 */
+.submit-btn {
+  width: 100%;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+}
+
+wx-button[type=primary] {
+  background-color: #684edf;
+  color: #fff;
+}
+wx-button[disabled][type=primary] {
+  background-color: #a090eb;
+}
+
+/* In-range style */
+.time-slot.in-range {
+  background: #edf2ff;  
+  border-color: #a090eb; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.time-slot.selected {
+  background: #f3f1f8;
+  border-color: #a090eb;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.time-slot.selected .status-dot {
+  background-color: #a090eb; /* Lighter purple status dot */
+  box-shadow: 0 0 12px rgba(160, 94, 255, 0.6); /* Glowing effect for active dot */
+}
+
+.time-slot.selected .time-label {
+  color: #684edf; /* Purple color for the selected time slot label */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* In-range time slot label */
+.time-slot.in-range .time-label {
+  color: #6c7aff; /* Soft purple text for in-range slots */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Active state for the time slot */
+.time-slot.active {
+  background: linear-gradient(135deg, #684edf, #946ae7); /* Purple gradient background */
+  border-color: #684edf; /* Deep purple border */
+  box-shadow: 0 2px 4px rgba(112, 9, 255, 0.726); /* Stronger shadow for a more prominent effect */
+  transform: scale(1.05); /* Slightly larger to make it more noticeable */
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Active label style */
+.time-slot.active .time-label {
+  color: #fff; /* White text for better contrast */
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); /* Subtle text shadow to enhance visibility */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Active status dot */
+.time-slot.active .status-dot {
+  background-color: #a090eb; /* Lighter purple status dot */
+  box-shadow: 0 0 12px rgba(160, 94, 255, 0.6); /* Glowing effect for active dot */
+}
+
+

@@ -1,0 +1,86 @@
+<view class="room-container">
+  <!-- 教室图片 -->
+  <image class="room-image" src="{{room.url}}" mode="aspectFill" />
+
+  <!-- 基本信息卡片 -->
+  <view class="info-card">
+    <view class="card-header">
+      <text class="room-name">{{room.roomName}}</text>
+      <!-- <view class="status-tag {{room.isBusy ? 'busy' : 'available'}}">
+        {{room.isBusy ? 'Busy' : 'Available'}}
+      </view> -->
+    </view>
+
+    <view class="detail-grid">
+      <view class="detail-item">
+        <image src="../../assets/icons/capacity.png" class="detail-icon" />
+        <text>Capacity: {{room.capacity}} people</text>
+      </view>
+      <view class="detail-item">
+        <image src="../../assets/icons/type.png" class="detail-icon" />
+        <text wx:if="{{room.roomType === 1}}">Teaching Rooms</text>
+        <text wx:if="{{room.roomType === 2}}">Meeting Rooms</text>
+        <text wx:if="{{room.roomType === 3}}">Activities Rooms</text>
+      </view>
+    </view>
+
+    <view class="location">
+      <image src="../../assets/icons/location_fill.png" class="detail-icon" />
+      <text>{{room.location}}</text>
+    </view>
+
+    <view class="meta-info">
+      <view class="meta-item">
+        <image src="../../assets/icons/approval.png" class="detail-icon" />
+        <text class="meta-label">Approval Requirements: </text>
+        <text class="{{room.requireApproval ? 'highlight' : 'normal-item'}}">{{room.requireApproval ? 'Need Approval' : 'No Need for Approval'}}</text>
+      </view>
+      <view class="meta-item" style="margin-bottom: 10rpx;">
+        <image src="../../assets/icons/restrict.png" class="detail-icon" />
+        <text class="meta-label">Usage Restriction: </text>
+        <text class="{{room.isRestricted ? 'highlight-red' : 'normal-item'}}">{{room.isRestricted ? 'Restricted' : 'All Users'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="info-card">
+    <rich-text class="description" nodes="{{formattedDescription}}"></rich-text>
+  </view>
+
+  <view class="container-calendar">
+    <!-- 日期选择滚动条 -->
+    <scroll-view class="date-scroll" scroll-x>
+      <view class="date-list">
+        <view wx:for="{{dateList}}" wx:key="date" class="date-item {{activeDate === item.fullDate ? 'active' : ''}}" bind:tap="switchDate" data-date="{{item.fullDate}}">
+          <text class="weekday">{{item.weekdayShort}}</text>
+          <text class="day">{{item.day}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view wx:if="{{currentSchedule.length === 0}}" class="no-schedule-message" 
+    bindtap="handleBook" data-date="{{activeDate}}">
+      <text>No arrangement for today. </text>
+      <text style="border-bottom: 1px solid #333; font-style: italic;">Click to book now!</text> 😊
+    </view>
+
+    <!-- 时间轴主体 -->
+    <view class="time-container" wx:if="{{currentSchedule.length !== 0}}" bindtap="handleBook" data-date="{{activeDate}}">
+      <view class="time-column">
+        <view class="time-labels">
+          <view wx:for="{{timeLabels}}" wx:key="index" class="time-label">
+            {{item}}
+          </view>
+        </view>
+
+        <view class="schedule-column">
+          <view wx:for="{{currentSchedule}}" wx:key="index" class="schedule-block" style="top: {{item.position}}rpx; height: {{item.height}}rpx;" data-status="{{item.status}}">
+            <text class="schedule-title" wx:if="{{item.status === 'busy'}}">{{item.title || 'Reserved'}}</text>
+            <text class="schedule-time">From {{item.startTime}} to {{item.endTime}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>

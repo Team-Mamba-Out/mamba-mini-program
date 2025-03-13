@@ -1,0 +1,28 @@
+<view class="container1">
+  <!-- 顶部导航 -->
+ 
+
+  <!-- 发件人信息 -->
+  <view class="sender-info">
+    <view class="avatar">{{message.icon}}</view>
+    <view class="sender-details">
+      <view class="sender-name">{{message.sender}}</view>
+      <view class="recipient">{{message.title}}</view>
+    </view>
+    <view class="email-meta">
+      <text class="timestamp">{{message.timestamp}}</text>
+      <view class="security-icon">🛡</view>
+    </view>
+  </view>
+
+  <!-- 邮件正文 -->
+  <view class="email-content">
+    <text>In this week’s industrial seminar we will be joined by two University of Dundee alumni working at NCR.</text>
+    <text>NCR Atleos is known for its innovative solutions in the financial industry...</text>
+    <text>University of Dundee alumni, Duncan McDiarmid (Mechanical Engineering) and Adam Muir (Physics)...</text>
+  </view>
+
+  <view class="logo">
+    <image src="/img/logo.jpg" mode=""/>
+  </view>
+</view>

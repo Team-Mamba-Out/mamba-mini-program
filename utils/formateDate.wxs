@@ -1,0 +1,31 @@
+// utils/formatDate.wxs
+
+// 补零函数（微信官方写法）
+function formatNumber(n) {
+  n = n.toString()
+  return n[1] ? n : '0' + n
+}
+
+// 时间格式化主函数
+function formatDate(timestamp) {
+  if (!timestamp) return '请选择时间';
+  
+  var date = getDate(timestamp);
+  
+  var year = date.getFullYear()
+  var month = date.getMonth() + 1
+  var day = date.getDate()
+  var hour = date.getHours()
+  var minute = date.getMinutes()
+
+  // 对每个字段应用补零
+  return year + '-' + 
+    formatNumber(month) + '-' + 
+    formatNumber(day) + ' ' + 
+    formatNumber(hour) + ':' + 
+    formatNumber(minute)
+}
+
+module.exports = {
+  formatDate: formatDate
+};

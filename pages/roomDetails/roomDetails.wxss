@@ -1,0 +1,310 @@
+.room-container {
+  padding: 20rpx;
+  background: #f5f6f8;
+}
+
+.room-image {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16rpx;
+}
+
+.info-card {
+  background: #fff;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  margin: 24rpx 0;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.room-name {
+  font-size: 38rpx;
+  font-weight: 600;
+  color: #333;
+  padding: 5rpx;
+}
+
+.status-tag {
+  padding: 8rpx 24rpx;
+  border-radius: 40rpx;
+  font-size: 24rpx;
+}
+
+.available {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.busy {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.detail-icon {
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 12rpx;
+}
+
+.location{
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 24rpx;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 24rpx;
+}
+
+.meta-label {
+  color: #666;  
+}
+
+.highlight {
+  color: #2c3e50;
+  margin-left: 10rpx;
+  font-style: italic;
+  border-bottom: 1px solid #999;
+  font-weight: bold;
+}
+
+.highlight-red {
+  color: #2c3e50;
+  margin-left: 10rpx;
+  font-style: italic;
+  border-bottom: 1px solid #999;
+  font-weight: bold;
+}
+
+.normal-item{
+  margin-left: 10rpx;
+  font-style: italic;
+  border-bottom: 1px solid #999;
+}
+
+/* 页面整体样式 */
+/* pages/roomDetails/roomDetails.wxss */
+.container-calendar {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 日期选择条 */
+.date-scroll {
+  background: #fff;  
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+}
+
+.date-list {
+  display: flex;
+  padding: 20rpx 10rpx;
+}
+
+.date-item {
+  width: 120rpx;
+  padding: 20rpx;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.date-item.active {
+  background: #f3f0ff;
+  border-radius: 16rpx;
+}
+
+.weekday {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.day {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.date-item.active .weekday,
+.date-item.active .day {
+  color: #684edf;
+}
+
+/* 时间轴容器 */
+.no-schedule-message{
+  background: #fff;
+  margin: 24rpx 0rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.06);
+  padding: 30rpx;
+  text-align: center;
+  color: #333;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 27rpx;
+}
+
+.time-container {
+  flex: 1;
+  background: #fff;
+  margin: 24rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.time-column {
+  display: flex;
+  position: relative;
+  height: auto;
+  padding: 24rpx 0;
+}
+
+/* 时间刻度样式 */
+.time-labels {
+  width: 160rpx;
+  position: relative;
+}
+
+.time-label {
+  height: 60rpx;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 45rpx;
+  font-style: italic;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.time-label-text {
+  font-size: 26rpx;
+  color: #999;
+  position: relative;
+  z-index: 2;
+  background: #fff;
+  padding-left: 16rpx;
+}
+
+.time-label::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 200%;
+  height: 1rpx;
+  background: #f0f0f0;
+  z-index: 1;
+}
+
+/* 日程区块样式 */
+.schedule-column {
+  flex: 1;
+  position: relative;
+  margin-right: 24rpx;
+}
+
+.schedule-block {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: rgba(255,255,255,0.95);
+  border-left: 8rpx solid;
+  padding: 10rpx;
+  border-radius: 5rpx;
+  box-shadow: 0 3rpx 8rpx rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+  margin-left: 20rpx;
+  padding-left: 20rpx;
+  padding-bottom: 30rpx;
+  margin-top: 5rpx;
+  margin-bottom: 5rpx;
+}
+
+.schedule-block[data-status="busy"] {
+  border-color: #684edf;
+  background: #f1eefa;
+}
+
+/* .schedule-block[data-status="course"] {
+  border-color: #ffb347;
+  background: rgba(255,179,71,0.08);
+} */
+
+.schedule-time {
+  font-size: 24rpx;
+  color: #666;
+  display: flex;
+  align-items: center;
+  font-style: italic;
+}
+
+/* .schedule-time::before {
+  content: '';
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 90%;
+  background: currentColor;
+  margin-right: 12rpx;
+} */
+
+.schedule-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+  line-height: 1.6;
+}
+
+/* 美化细节 */
+.schedule-block:hover {
+  transform: translateY(-2rpx);
+  box-shadow: 0 6rpx 24rpx rgba(0,0,0,0.12);
+}
+
+.schedule-block:active {
+  transform: scale(0.98);
+}
+
+.book-btn {
+  background: #2196f3;
+  color: white;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  margin-top: 12rpx;
+  display: inline-block;
+}
+
+.description{
+  line-height: 40rpx;
+  color: #999;
+  font-size: 28rpx;
+}

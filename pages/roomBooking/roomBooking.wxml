@@ -1,0 +1,61 @@
+<view class="book-heading">Choose Booking Slots</view>
+
+<!-- pages/booking/booking.wxml -->
+<view class="container">
+  <view class="card-container">
+    <!-- 图片区域 -->
+    <view class="card-image">
+      <image src="{{room.url}}" mode="aspectFill" class="image-content" />
+    </view>
+
+    <!-- 信息区域 -->
+    <view class="card-content">
+      <text class="card-title">{{room.roomName}}</text>
+
+      <view class="info-row">
+        <icon type="calendar" size="14" color="#666" />
+        <text class="booking-text">Booking Date: {{selectedDate}}</text>
+      </view>
+
+      <view class="info-row">
+        <icon type="location" size="14" color="#666" />
+        <text class="info-text">{{room.location}}</text>
+      </view>
+
+      <view class="tag-container">
+        <view class="capacity-tag">
+          <icon type="people" size="12" />
+          <text>{{room.capacity}} people</text>
+        </view>
+        <view class="multimedia-tag" wx:if="{{room.multimedia}}">
+          <icon type="video" size="12" />
+          <text>multimedia</text>
+        </view>
+        <view class="multimedia-tag" wx:if="{{room.projector}}">
+          <icon type="video" size="12" />
+          <text>projector</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+
+  <wxs src="../../utils/includes.wxs" module="include" />
+
+  <!-- 时间段选择 grid -->
+  <view class="time-grid">
+    <block wx:for="{{timeSlots}}" wx:key="key">
+      <view class="time-slot {{item.disabled ? 'disabled' : ''}} {{include.includes(selectedSlots, item.key) ? 'selected' : ''}} {{activeSlot === item.key ? 'active' : ''}}" bindtap="handleSelectTime" data-key="{{item.key}}" data-disabled="{{item.disabled}}">
+        <text class="time-label">{{item.startTime}} → {{item.endTime}}</text>
+        <view class="status-dot"></view>
+      </view>
+    </block>
+  </view>
+</view>
+<!-- 操作按钮 -->
+<view class="action-box">
+  <button type="primary" class="submit-btn" bindtap="handleSubmit" disabled="{{!startTime || !endTime}}">
+    <text wx:if="{{startTime && endTime}}">Submit ( From {{startTime}} to {{endTime}} )</text>
+    <text wx:else>Choose a Time Range</text>
+  </button>
+</view>
