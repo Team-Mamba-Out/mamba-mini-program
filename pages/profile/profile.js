@@ -12,6 +12,7 @@ Page({
     });
   },
   onShow(){
+    const userInfo = wx.getStorageSync('userInfo');
     if (!userInfo) {
       wx.showModal({
         title: 'Warning',
@@ -26,7 +27,7 @@ Page({
       })
       return
     }
-    const userInfo = wx.getStorageSync('userInfo');
+    
     const avatarText = this.getAvatarText(userInfo.name);
     this.setData({
       userInfo,
