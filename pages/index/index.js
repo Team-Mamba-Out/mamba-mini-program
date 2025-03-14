@@ -1,5 +1,6 @@
 Page({
   data: {
+    userInfo:null,
     active: 'index',
     deviceCategories: ['All devices', 'Multimedia', 'Projector'],
     capacityCategories: ['All capacities', 'less than 15', '15-35', '35-60'],
@@ -120,12 +121,21 @@ Page({
     });
   },
 
+  onShow(){
+    let userInfo = wx.getStorageSync('userInfo')
+    this.setData({
+      userInfo
+    })
+  },
   onLoad(options) {
     wx.showLoading({
       title: 'Loading...',
       mask: true
     });
-
+    let userInfo = wx.getStorageSync('userInfo')
+    this.setData({
+      userInfo
+    })
     // 初始化时加载房间数据
     this.loadRooms();
 
@@ -147,8 +157,21 @@ Page({
     const roomId = e.currentTarget.dataset.id;
     const rooms = this.data.rooms;
     const roomsString = JSON.stringify(rooms);
-    const userId = 1;
-
+    const userId = this.data.userInfo.uid;
+    if (!this.data.userInfo) {
+        wx.showModal({
+          title: 'Warning',
+          content: 'Please log in before using.',
+          complete: (res) => {
+            if (res.confirm) {
+              wx.navigateTo({
+                url: '/pages/login/login?url=index',
+              })
+            }
+          }
+        })
+        return
+    }
     // 调用后端接口判断是否有权限
     wx.request({
       url: `http://localhost:8080/records/allowReserve?roomId=${roomId}&userId=${userId}`,

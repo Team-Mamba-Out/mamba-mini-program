@@ -4,8 +4,32 @@
   flex-direction: column;
   background: #f8f9fa;
   padding: 10px;
+  margin-bottom: 80px;
 }
-
+.filter-wrap{
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  display: flex;
+  height: 20px;
+}
+.filter-wrap image{
+  margin-left: 8px;
+  margin-top: 4px;
+  width: 10px;
+  height: 10px;
+}
+.line1{
+  
+  border-right: 1px solid #d4d3d3;
+}
+.order-filter{
+  background-color: white;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 10px;
+}
 /* 费用卡片 */
 .payment-card {
   background: white;
@@ -29,11 +53,9 @@
   font-size: 16px;
   font-weight: bold;
 }
-
-/* 待支付 & 已支付徽章 */
 .due-badge {
   font-size: 12px;
-  width: 50px;
+  width: 60px;
   color: white;
   font-weight: bold;
   text-align: center;
@@ -50,19 +72,21 @@
 }
 .date1{
   margin-top: 5px;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 9px;
   font-weight: bold;
 }
 .date2{
-  font-size: 10px;
+  font-size: 11px;
   color:#726f6f;
 }
 .due {
   padding:4px 3px;
   background: #684edf;
 }
-
+.info-wrap{
+  display: flex;
+}
 .paid {
   padding:4px 3px;
   background: gray;
@@ -144,8 +168,9 @@
 
 /* 按钮 & 状态 */
 .actions {
-  margin-top: 25px;
+  margin-top: 5px;
   display: flex;
+  justify-content: space-between;
   gap: 10px;
 }
 
@@ -160,7 +185,7 @@
 }
 
 .cancel-btn {
-  background-color: #f77e7e;
+  background-color: #f74444;
   color: white;
 }
 

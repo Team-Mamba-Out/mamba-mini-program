@@ -3,6 +3,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    userInfo:null,
     selectedDate: null,
     room: null,
     schedule: null,
@@ -18,6 +19,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let userInfo = wx.getStorageSync('userInfo')
+    this.setData({
+      userInfo
+    })
     const bookingData = wx.getStorageSync('roomBookingData'); // 获取存储的数据
 
     if (bookingData) {
@@ -227,7 +232,7 @@ Page({
       method: 'POST',
       data: {
         roomId: this.data.room.id,
-        userId: 2,
+        userId: this.data.userInfo.uid,
         startTime: startDateTime,
         endTime: endDateTime,
         hasCheckedIn: false

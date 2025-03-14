@@ -1,71 +1,61 @@
-// pages/profile/profile.js
 Page({
-
   data: {
+    userInfo:null,
     active: 'profile',
+    avatarText: ''  // 头像首字母
   },
+
   onChange(event) {
     const activeTab = event.detail;
     wx.switchTab({
       url: `/pages/${activeTab}/${activeTab}`,
     });
   },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
+  onShow(){
+    if (!userInfo) {
+      wx.showModal({
+        title: 'Warning',
+        content: 'Please log in before using.',
+        complete: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/login/login?url=profile',
+            })
+          }
+        }
+      })
+      return
+    }
+    const userInfo = wx.getStorageSync('userInfo');
+    const avatarText = this.getAvatarText(userInfo.name);
     this.setData({
+      userInfo,
+      avatarText
+    })
+    
+  },
+  onLoad(options) {
+    const userInfo = wx.getStorageSync('userInfo');
+     if (!userInfo) {
+       return
+     }
+    // // 计算头像首字母
+    const avatarText = this.getAvatarText(userInfo.name);
+    this.setData({
+      userInfo,
+      avatarText: avatarText,
       active: 'profile',
     });
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
 
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
+  // 获取头像的首字母
+  getAvatarText: function(name) {
+    const nameParts = name.split(' ');
+    let avatarText = '';
+    nameParts.forEach(part => {
+      avatarText += part.charAt(0).toUpperCase();  // 提取每个单词的首字母并转换为大写
+    });
+    return avatarText;
   }
 })
