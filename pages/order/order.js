@@ -7,6 +7,8 @@ Page({
   data: {
     userInfo:null,
     selectedOrderType: "All",
+    selectedTimeType:"Default",
+    TimeTypes:["Default","Booking Time","Order Time"],
     orderTypes: ["All", "Pending", "Ongoing", "Done","Cancelled","Overdue"],
     active: 'order',
     rooms:["Teaching Room","Activity Room","Meeting Room"],
@@ -15,6 +17,57 @@ Page({
     isloading:false,
     pageNum:1,
     total:0
+  },
+  checkIn(e){
+    let id = e.currentTarget.dataset.item.id
+    wx.request({
+      url: 'http://172.20.10.6:8080/records/checkin',
+      method:'PUT',
+      data: {id}, // ✅ 发送表单数据
+      header: { 
+              'content-type': 'application/x-www-form-urlencoded' // ✅ 确保后端能解析
+      },
+      success:(res)=>{
+        this.setData({
+          pageNum:1,
+          total:0,
+          records:[]
+        }),
+        this.getRecord()
+      }
+    })
+  },
+  // 显示排序选项
+  showSortOptions() {
+    wx.showActionSheet({
+      itemList: this.data.TimeTypes,
+      success: (res) => {
+        console.log("选择的排序方式:", res.tapIndex);
+        this.setData({
+          selectedTimeType: this.data.TimeTypes[res.tapIndex]
+        });
+        this.sortRecords(res.tapIndex);
+      },
+      fail: (res) => {
+        console.log("取消选择", res.errMsg);
+      }
+    });
+  },
+
+  // 执行排序
+  sortRecords(type) {
+    let showRecords = this.data.records
+    if (type === 2) { 
+      // 按 `recordTime` 排序（下单时间）
+      showRecords.sort((a, b) => new Date(a.recordTime) - new Date(b.recordTime));
+    } else if (type === 1) { 
+      // 按 `startTime` 排序（预约时间）
+      showRecords.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+    } else { 
+      // 按 `id` 排序（默认）
+      showRecords.sort((a, b) => a.id - b.id);
+    }
+    this.setData({ showRecords });
   },
   filterRecords(status) {
     const filtered = this.data.records.filter(record => 
