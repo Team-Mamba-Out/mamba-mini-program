@@ -3,6 +3,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    userInfo:null,
     selectedDate: null,
     room: null,
     schedule: null,
@@ -18,6 +19,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    let userInfo = wx.getStorageSync('userInfo')
+    this.setData({
+      userInfo
+    })
     const bookingData = wx.getStorageSync('roomBookingData'); // 获取存储的数据
 
     if (bookingData) {
@@ -217,27 +222,31 @@ Page({
       wx.showToast({ title: '请选择时间段', icon: 'none' });
       return;
     }
-  
+
     const startDateTime = this.convertToLocalDateTime(this.data.selectedDate, this.data.startTime);
     const endDateTime = this.convertToLocalDateTime(this.data.selectedDate, this.data.endTime);
-  
+
     // 提交数据到后端
     wx.request({
-      url: ' http://localhost:8080/records', 
+      url: ' http://localhost:8080/records',
       method: 'POST',
       data: {
-        roomId: this.data.room.id,  
-        userId: 2,  
-        startTime: startDateTime,  
+        roomId: this.data.room.id,
+        userId: this.data.userInfo.uid,
+        startTime: startDateTime,
         endTime: endDateTime,
-        hasCheckedIn: false  
+        hasCheckedIn: false
       },
       success: (res) => {
-        if (res.data.code === 200) {
-          wx.showToast({ title: '预定成功', icon: 'success' });
+        console.log(res);
+        if (res.statusCode === 200) {
+          wx.showToast({ title: 'Booking Successfully!', icon: 'success' });
           wx.navigateBack();
+          if (res.data.code === 500) {
+            wx.showToast({ title: 'Occupied Successfully! Please wait for approval.', icon: 'success' });
+          }
         } else {
-          wx.showToast({ title: '预定失败', icon: 'none' });
+          wx.showToast({ title: 'Booking Failed.', icon: 'none' });
         }
       },
       fail: (err) => {

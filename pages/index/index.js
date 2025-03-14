@@ -1,5 +1,6 @@
 Page({
   data: {
+    userInfo:null,
     active: 'index',
     deviceCategories: ['All devices', 'Multimedia', 'Projector'],
     capacityCategories: ['All capacities', 'less than 15', '15-35', '35-60'],
@@ -32,47 +33,47 @@ Page({
   // 加载房间数据
   loadRooms() {
     const params = {};
-  
+
     // 只有在选择了设备类别时才传递 `multimedia` 和 `projector`
     if (this.data.selectedDevice === 'Multimedia') {
       params.multimedia = true;
     } else if (this.data.selectedDevice === 'Projector') {
       params.projector = true;
     }
-  
+
     // 处理时间筛选
-  if (this.data.startDateTime) {
-    const localStartTime = new Date(this.data.startDateTime);
-    
-    // 获取本地时区偏差（单位：分钟）
-    const timezoneOffset = localStartTime.getTimezoneOffset();
+    if (this.data.startDateTime) {
+      const localStartTime = new Date(this.data.startDateTime);
 
-    // 加上时区差
-    localStartTime.setMinutes(localStartTime.getMinutes() - timezoneOffset);
-
-    // 将本地时间转为ISO格式并去掉毫秒部分
-    const startTimeString = localStartTime.toISOString().split('.')[0];  // 去掉毫秒部分
-    params.start = startTimeString;
-    if (this.data.endDateTime) {
-      const localEndTime = new Date(this.data.endDateTime);
-      
       // 获取本地时区偏差（单位：分钟）
-      const timezoneOffset = localEndTime.getTimezoneOffset();
-  
+      const timezoneOffset = localStartTime.getTimezoneOffset();
+
       // 加上时区差
-      localEndTime.setMinutes(localEndTime.getMinutes() - timezoneOffset);
-  
+      localStartTime.setMinutes(localStartTime.getMinutes() - timezoneOffset);
+
       // 将本地时间转为ISO格式并去掉毫秒部分
-      const endTimeString = localEndTime.toISOString().split('.')[0];  // 去掉毫秒部分
-      params.end = endTimeString;
+      const startTimeString = localStartTime.toISOString().split('.')[0];  // 去掉毫秒部分
+      params.start = startTimeString;
+      if (this.data.endDateTime) {
+        const localEndTime = new Date(this.data.endDateTime);
+
+        // 获取本地时区偏差（单位：分钟）
+        const timezoneOffset = localEndTime.getTimezoneOffset();
+
+        // 加上时区差
+        localEndTime.setMinutes(localEndTime.getMinutes() - timezoneOffset);
+
+        // 将本地时间转为ISO格式并去掉毫秒部分
+        const endTimeString = localEndTime.toISOString().split('.')[0];  // 去掉毫秒部分
+        params.end = endTimeString;
+      }
+      else {
+        return;
+      }
     }
-    else{
-      return;
-    }
-  }
-  
+
     console.log("Params before sending:", params); // 调试输出
-  
+
     wx.request({
       url: 'http://localhost:8080/rooms/getRooms',
       method: 'GET',
@@ -81,7 +82,7 @@ Page({
         console.log("API Success Response:", res);
         if (res.data && res.data.code === 200) {
           let rooms = res.data.data.rooms || [];
-          
+
           // 前端容量筛选
           if (this.data.selectedCapacity !== 'All capacities') {
             const capacityMap = {
@@ -89,19 +90,19 @@ Page({
               '15-35': cap => cap >= 15 && cap <= 35,
               '35-60': cap => cap > 35 && cap <= 60
             };
-            
+
             if (capacityMap[this.data.selectedCapacity]) {
-              rooms = rooms.filter(room => 
+              rooms = rooms.filter(room =>
                 capacityMap[this.data.selectedCapacity](room.capacity)
               );
             }
           }
-  
+
           // 分类房间（假设后端返回的roomType是数字）
           const teachingRooms = rooms.filter(room => room.roomType === 1);
           const activitiesRooms = rooms.filter(room => room.roomType === 3);
           const meetingRooms = rooms.filter(room => room.roomType === 2);
-  
+
           this.setData({
             rooms,
             teachingRooms,
@@ -118,14 +119,23 @@ Page({
         wx.hideLoading();
       }
     });
-  },  
+  },
 
+  onShow(){
+    let userInfo = wx.getStorageSync('userInfo')
+    this.setData({
+      userInfo
+    })
+  },
   onLoad(options) {
     wx.showLoading({
       title: 'Loading...',
       mask: true
     });
-
+    let userInfo = wx.getStorageSync('userInfo')
+    this.setData({
+      userInfo
+    })
     // 初始化时加载房间数据
     this.loadRooms();
 
@@ -144,12 +154,50 @@ Page({
   },
 
   goToDetails: function (e) {
-    const roomId = e.currentTarget.dataset.id; // 获取点击的房间ID
-    const rooms = this.data.rooms; // 获取当前页面的所有房间数据
-    const roomsString = JSON.stringify(rooms); // 将数组转为JSON字符串
-
-    wx.navigateTo({
-      url: '/pages/roomDetails/roomDetails?id=' + roomId + '&rooms=' + encodeURIComponent(roomsString)
+    const roomId = e.currentTarget.dataset.id;
+    const rooms = this.data.rooms;
+    const roomsString = JSON.stringify(rooms);
+    const userId = this.data.userInfo.uid;
+    if (!this.data.userInfo) {
+        wx.showModal({
+          title: 'Warning',
+          content: 'Please log in before using.',
+          complete: (res) => {
+            if (res.confirm) {
+              wx.navigateTo({
+                url: '/pages/login/login?url=index',
+              })
+            }
+          }
+        })
+        return
+    }
+    // 调用后端接口判断是否有权限
+    wx.request({
+      url: `http://localhost:8080/records/allowReserve?roomId=${roomId}&userId=${userId}`,
+      method: 'GET',
+      success: (res) => {
+        if (res.data.code === 200 && res.data.data === 'allow') {
+          wx.navigateTo({
+            url: '/pages/roomDetails/roomDetails?id=' + roomId + '&rooms=' + encodeURIComponent(roomsString)
+          });
+        } else {
+          // 如果没有权限，弹出提示
+          wx.showToast({
+            title: 'You do not have permission to access!',
+            icon: 'none',
+            duration: 2000
+          });
+        }
+      },
+      fail: (err) => {
+        // 请求失败时的处理
+        wx.showToast({
+          title: 'Request failed, please retry later.',
+          icon: 'none',
+          duration: 2000
+        });
+      }
     });
   },
 
@@ -161,7 +209,7 @@ Page({
   },
 
   // 设备类型改变
-  onCategoryChange1: function(event) {
+  onCategoryChange1: function (event) {
     const selectedIndex = event.detail.value;
     this.setData({
       selectedDevice: this.data.deviceCategories[selectedIndex]
@@ -171,7 +219,7 @@ Page({
   },
 
   // 容量筛选改变（前端筛选）
-  onCategoryChange2: function(event) {
+  onCategoryChange2: function (event) {
     const selectedIndex = event.detail.value;
     this.setData({
       selectedCapacity: this.data.capacityCategories[selectedIndex]

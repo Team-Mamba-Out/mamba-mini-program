@@ -1,0 +1,22 @@
+<view class="container1">
+  <!-- Logo -->
+  <image class="logo" src="/img/logo.jpg"></image>
+
+  <!-- 欢迎标题 -->
+  <text class="title"></text>
+
+ <!-- 手机号输入框 -->
+ <view class="input-wrapper">
+    <image class="icon2" src="/img/user.png"/>
+    <input class="input" placeholder="UoD Email" bindinput="emailInput"></input>
+  </view>
+
+  <view class="input-wrapper">
+    <image class="icon1" src="/img/password.png"/>
+    <input class="input" placeholder="Verification Code" bindinput="passwordInput" password="true"/>
+    <view bind:tap="emailSend" class="send">Send Code</view>
+  </view>
+    
+  <!-- 登录按钮 -->
+  <button class="login-btn" bindtap="phoneLogin">login</button>
+</view>

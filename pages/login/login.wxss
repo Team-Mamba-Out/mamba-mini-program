@@ -1,0 +1,82 @@
+.container1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  
+}
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 70%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+.send{
+  width: 90px;
+  height: 12px;
+  line-height: 12px;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 4px;
+  text-align: center;
+  background-color: #684edf;
+}
+.icon1{
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+.icon2{
+  width: 25px;
+  height: 25px;
+  margin-right: 2px;
+  
+}
+.icon {
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.phone-number {
+  font-size: 16px;
+  color: #333;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+.logo {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.login-btn {
+  width: 78%;
+  height: 40px;
+  line-height: 15px;
+  padding: 12px 0;
+  background-color: #684edf;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  margin-top: 20px;
+  margin-bottom: 150px;
+}
+
+
+

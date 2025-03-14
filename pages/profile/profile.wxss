@@ -1,1 +1,183 @@
 /* pages/profile/profile.wxss */
+/* 主容器 */
+.container {
+  background: #faf8ff;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 头部样式 */
+.header {
+  background: linear-gradient(135deg, #674ed4 0%, #553C9A 100%);
+  padding: 80rpx 40rpx 60rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 8rpx 40rpx rgba(103,78,212,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  left: -10%;
+  width: 120%;
+  height: 150%;
+  background: radial-gradient(circle at 50% 50%, 
+    rgba(255,255,255,0.1) 0%, 
+    rgba(255,255,255,0) 70%);
+}
+
+/* 头像样式 */
+.avatar-wrapper {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(45deg, #8f7aea, #6c5ad5);
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.avatar-wrapper.halo:hover {
+  transform: scale(1.05);
+}
+
+.halo-effect {
+  position: absolute;
+  width: 220rpx;
+  height: 220rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(179, 157, 255, 0.3);
+  animation: haloPulse 2s infinite;
+}
+
+@keyframes haloPulse {
+  0% { opacity: 0.6; transform: scale(0.95); }
+  50% { opacity: 0.3; transform: scale(1.05); }
+  100% { opacity: 0.6; transform: scale(0.95); }
+}
+
+.avatar-text {
+  font-size: 72rpx;
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+  text-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
+}
+
+/* 欢迎信息 */
+.welcome {
+  color: #fff;
+  font-size: 38rpx;
+  font-weight: 500;
+  margin-top: 30rpx;
+  margin-bottom: 10rpx;
+  letter-spacing: 1rpx;
+  position: relative;
+  z-index: 2;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* 信息列表样式 */
+.info-list {
+  background: rgba(255,255,255,0.95);
+  margin: -40rpx 40rpx 40rpx;
+  border-radius: 32rpx;
+  padding: 20rpx 0;
+  box-shadow: 0 12rpx 40rpx rgba(103,78,212,0.12);
+  backdrop-filter: blur(10rpx);
+  position: relative;
+  z-index: 3;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  padding: 36rpx 40rpx;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.item-hover {
+  background: rgba(245, 243, 255, 0.5);
+  transform: translateX(10rpx);
+}
+
+.info-item van-icon {
+  transition: transform 0.3s ease;
+}
+
+.info-item:hover van-icon {
+  transform: scale(1.1);
+}
+
+.label {
+  color: #7A6F9B;
+  font-size: 30rpx;
+  margin-left: 25rpx;
+  font-weight: 500;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.info-value {
+  color: #4A4458;
+  font-size: 29rpx;
+  flex: 1;
+  text-align: right;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.decor-line {
+  position: absolute;
+  bottom: 0;
+  left: 40rpx;
+  right: 40rpx;
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent 0%, #EEE6FF 50%, transparent 100%);
+}
+
+/* 按钮样式 */
+.btn-container {
+  padding: 0 40rpx;
+  margin: 60rpx 0 120rpx;
+}
+
+.logout-btn {
+  background: rgba(255,255,255,0.95);
+  border: 2rpx solid #5840a2;
+  border-radius: 60rpx;
+  height: 80rpx;
+  width: 300rpx;
+  line-height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(103,78,212,0.1);
+  transition: all 0.3s ease;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 30rpx;
+  color: #4A4458;
+}
+
+.logout-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 12rpx rgba(103,78,212,0.15);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.btn-text {
+  color: #4A4458;
+  font-size: 34rpx;
+  font-weight: bold;
+  margin-right: 20rpx;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+wx-button:after {
+  border: 0px !important;
+  color: #4A4458;
+}

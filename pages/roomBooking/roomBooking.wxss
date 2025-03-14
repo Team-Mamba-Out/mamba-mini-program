@@ -189,9 +189,10 @@
 }
 
 wx-button[type=primary] {
-  background-color: #684edf;
+  background-color: #684edf !important;
   color: #fff;
 }
+
 wx-button[disabled][type=primary] {
   background-color: #a090eb;
 }

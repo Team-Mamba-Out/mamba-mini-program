@@ -5,10 +5,44 @@ Page({
    * 页面的初始数据
    */
   data: {
+    userInfo:null,
+    selectedOrderType: "All",
+    orderTypes: ["All", "Pending", "Ongoing", "Done","Cancelled","Overdue"],
     active: 'order',
     rooms:["Teaching Room","Activity Room","Meeting Room"],
+    records: [],
+    showRecords:[],
+    isloading:false,
+    pageNum:1,
+    total:0
+  },
+  filterRecords(status) {
+    const filtered = this.data.records.filter(record => 
+      status === 0 ? true : record.status === status // 0 代表 "全部订单"
+    );
     
-    records: []
+    this.setData({ showRecords: filtered });
+    console.log("筛选后的数据:", filtered);
+  },
+  showOrderFilter() {
+    wx.showActionSheet({
+      itemList: this.data.orderTypes,
+      success: (res) => {
+        if (this.data.orderTypes[res.tapIndex] == 'All') {
+          this.setData({
+            showRecords:this.data.records
+          })
+        }else{
+        this.filterRecords(this.data.orderTypes[res.tapIndex])
+        }
+        this.setData({
+          selectedOrderType: this.data.orderTypes[res.tapIndex]
+        });
+      },
+      fail: (res) => {
+        console.log("取消选择", res.errMsg);
+      }
+    });
   },
   onChange(event) {
     const activeTab = event.detail;
@@ -26,14 +60,24 @@ Page({
       content: `Cancelling three times will be marked`,
       success: (res) => {
         if (res.confirm) {
-          const id = e.currentTarget.dataset.item.id
-          const updatedRecords = this.data.records.map(record => {
-            if (record.id === id) {
-              return { ...record, cancelled: true }; // 
+          let id = e.currentTarget.dataset.item.id
+          console.log(id);
+          wx.request({
+            url: 'http://localhost:8080/records/cancel',
+            method:'PUT',
+            data: "id=123", // ✅ 发送表单数据
+            header: { 
+                'content-type': 'application/x-www-form-urlencoded' // ✅ 确保后端能解析
+        },
+            success:(res)=>{
+              this.setData({
+                pageNum:1,
+                records:[],
+                selectedOrderType:'All'
+              })
+              this.getRecord()
             }
-            return record; // 其他数据保持不变
-          });
-          this.setData({ records: updatedRecords }); 
+          })
         }
       }
     });
@@ -41,20 +85,45 @@ Page({
   checkIn(e){
     
   },
-  onLoad(options) {
+  onPullDownRefresh() {
     this.setData({
-      active: 'order',
-    });
+      pageNum:1,
+      total:0,
+      records:[]
+    }),
+    this.getRecord()
+  },
+  onReachBottom() {
+    if (this.data.pageNum * 5 >= this.data.total) {
+      return 
+    }
+    if (this.data.isloading) {
+      return
+    }
+this.setData({
+  pageNum:this.data.pageNum + 1
+})
+this.getRecord()
+  },
+  getRecord(){
+    this.setData({
+      isloading:true
+    })
+    wx.showLoading({
+      title: 'loading...',
+    })
     wx.request({
       url: 'http://localhost:8080/records/getRecords',
       data:{
-        page:1,
-        size:10
+      page:this.data.pageNum,
+      size:5,
+      userId: this.data.userInfo.uid
       },
       method:'GET',
       success:(res)=>{
         let records = res.data.data.records
         console.log(records);
+        let total = res.data.data.total
         const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0); // 归零时间，确保只计算天数
     const monthMap = {
@@ -89,13 +158,28 @@ Page({
    };
   });
       // 更新数据
-      this.setData({ records: formattedRecords });
+      this.setData({ records: [...this.data.records,...formattedRecords],showRecords: [...this.data.records,...formattedRecords],isloading:false,total });
       },
       fail(res){
         console.log(res);
+      },
+      complete:()=>{
+        wx.hideLoading()
       }
     })
     
+  },
+
+  onLoad(options) {
+    let userInfo = wx.getStorageSync('userInfo')
+    this.setData({
+      userInfo,
+      active: 'order',
+    });
+    if (!userInfo) {
+      return
+    }
+    this.getRecord()
  },
 
   /**
@@ -109,7 +193,25 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    const userInfo = wx.getStorageSync('userInfo');
+    this.setData({
+      userInfo
+    })
+    if (!userInfo) {
+      wx.showModal({
+        title: 'Warning',
+        content: 'Please log in before using.',
+        complete: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/login/login?url=order',
+            })
+          }
+        }
+      })
+      return
+    }
+    this.getRecord()
   },
 
   /**
@@ -126,19 +228,9 @@ Page({
 
   },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
+ 
 
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
+  
 
   /**
    * 用户点击右上角分享

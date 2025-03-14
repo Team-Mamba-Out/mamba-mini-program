@@ -1,7 +1,18 @@
+
+<view class="order-filter">
+  <view bindtap="showOrderFilter" class="filter-wrap line1">
+    <view class="filter1" >{{ selectedOrderType }}</view>
+    <image src="/img/down.png" mode=""/>
+  </view>
+  <view bindtap="showSortOptions" class="filter-wrap">
+    <view class="filter1" >{{ selectedTimeType }}</view>
+    <image src="/img/down.png" mode=""/>
+  </view>
+</view>
 <view class="container1">
   <!-- 费用列表 -->
   <view class="payment-list">
-    <block wx:for="{{records}}" wx:key="id">
+    <block wx:for="{{showRecords}}" wx:key="id">
       <view wx:if="{{!item.cancelled}}" class="payment-card">
         <!-- 费用标题 -->
         <view class="payment-header">
@@ -10,7 +21,7 @@
             <text class="location">{{item.correspondingRoom.location}}</text>
           </view>
           <view class="status-wrap">
-            <view class="due-badge {{item.status=='Done' ? 'paid' : 'due'}}">
+            <view class="due-badge {{item.status!='Pending' & item.status!='Ongoing' ? 'paid' : 'due'}}">
               <text>{{item.status}}</text>
             </view>
             <view class="date-wrap">
@@ -19,46 +30,41 @@
             </view>
           </view>
         </view>
-        <view class="{{item.status!='Done'? 'time-wrap-due':'time-wrap'}}">
+        <view class="{{item.status=='Pending' | item.status=='Ongoing'? 'time-wrap-due':'time-wrap'}}">
           <view class="start-wrap">
-            <view class="time {{item.status!='Done'? 'time-due':'' }}">{{item.startTimeNoS}}</view>
-            <view class="date {{item.status!='Done'? 'date-due':'' }}">{{item.startDate}}</view>
+            <view class="time {{item.status=='Pending' | item.status=='Ongoing'? 'time-due':'' }}">{{item.startTimeNoS}}</view>
+            <view class="date {{item.status=='Pending' | item.status=='Ongoing'? 'date-due':'' }}">{{item.startDate}}</view>
           </view>
           <view class="bridge-wrap">
-            <view class="total-time {{item.status!='Done'? 'date-due':'' }}">
+            <view class="total-time {{item.status=='Pending' | item.status=='Ongoing'? 'date-due':'' }}">
             {{item.totalTime}} in total
             </view>
-            <view class="bridge {{item.status!='Done'? 'time-due':'' }}">
+            <view class="bridge {{item.status=='Pending' | item.status=='Ongoing'? 'time-due':'' }}">
             ···················
             </view>
           </view>
           <view class="start-wrap">
-            <view class="time {{item.status!='Done' ? 'time-due':'' }}">{{item.endTimeNoS}}</view>
-            <view class="date {{item.status!='Done' ? 'date-due':'' }}">{{item.endDate}}</view>
+            <view class="time {{item.status=='Pending' | item.status=='Ongoing' ? 'time-due':'' }}">{{item.endTimeNoS}}</view>
+            <view class="date {{item.status=='Pending' | item.status=='Ongoing' ? 'date-due':'' }}">{{item.endDate}}</view>
           </view>
         </view>
-        <view class="bottom-container">
-          <view class="amount-wrap">
+        <view class="amount-wrap">
             <text class="due-in" wx:if="{{!item.hasCheckedIn}}">Due in {{item.dueIn}} days</text>
           </view>
-          <!-- 按钮 & 状态 -->
+        <view class="bottom-container">
+          <view class="ref-no"> Order: {{item.recordTime}}</view>
           <view class="actions">
-            <button wx:if="{{item.status!='Done' & !item.hasCheckedIn}}" bind:tap="cancel" data-item="{{item}}" class="cancel-btn">Cancel</button>
-            <button wx:if="{{item.status!='Done' & !item.hasCheckedIn}}" bind:tap="checkIn" data-item="{{item}}" class="check-in-btn">Check in</button>
+            <button wx:if="{{item.status!='Done' & item.status !='Overdue' & item.status!='Cancelled'}}" bind:tap="cancel" data-item="{{item}}" class="cancel-btn">Cancel</button>
+            <button wx:if="{{item.allowCheckIn}}" bind:tap="checkIn" data-item="{{item}}" class="check-in-btn">Check in</button>
             <text wx:if="{{item.status=='Done' & item.hasCheckedIn}}" class="paid-text">✔ Finished</text>
-            <text wx:if="{{item.status=='Done' & !item.hasCheckedIn}}" class="overdue-text">❌ Overdue</text>
-          </view>
+            <text wx:if="{{item.status=='Overdue'}}" class="overdue-text">❌ Overdue</text>
         </view>
-
-        <!-- 额外信息 -->
-        <view wx:if="{{item.refNo}}" class="ref-no">
-          Ref no: {{item.refNo}}
         </view>
       </view>
     </block>
   </view>
 </view>
-
+<view>111</view>
 <van-tabbar active="{{ active }}" active-color="#674ed4" inactive-color="#919191" bind:change="onChange">
   <van-tabbar-item name="index" icon="wap-home">Home</van-tabbar-item>
   <van-tabbar-item name="message" icon="comment">Message</van-tabbar-item>
