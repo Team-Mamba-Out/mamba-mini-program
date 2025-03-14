@@ -1,8 +1,8 @@
 Page({
   data: {
-    userInfo:null,
+    userInfo: {name:"Tourist", role: "Tourist"},
     active: 'profile',
-    avatarText: ''  // 头像首字母
+    avatarText: 'T'  // 头像首字母
   },
 
   onChange(event) {

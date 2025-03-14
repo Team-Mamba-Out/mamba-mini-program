@@ -4,7 +4,7 @@
   flex-direction: column;
   background: #f8f9fa;
   padding: 10px;
-  margin-bottom: 80px;
+  margin-bottom: 10vh;
 }
 .filter-wrap{
   align-items: center;
@@ -209,4 +209,10 @@
   font-size: 12px;
   color: gray;
   margin-top: 5px;
+}
+.remind{
+  margin-top: 5rpx;
+  color: #726f6f;
+  font-style: italic;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

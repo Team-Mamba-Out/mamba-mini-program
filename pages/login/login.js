@@ -7,7 +7,7 @@ Page({
   data: {
     token:'',
     userInfo:null,
-    email:'',
+    email:null,
     code:'',
     url:''
   },
@@ -58,6 +58,13 @@ Page({
   },
   emailSend(){
     let email = this.data.email
+    if (email == null) {
+      wx.showToast({
+        title: 'Invalid Email',
+        icon:'error'
+      })
+      return
+    }
     wx.request({
       url: `http://localhost:8080/verify/send?email=${email}`,
       method:'GET',

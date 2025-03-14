@@ -9,25 +9,25 @@
 <!-- 信息列表 -->
 <view class="info-list">
   <view class="info-item">
-    <van-icon name="coupon" color="#674ed4" size="18px" />
+    <van-icon name="coupon" color="#674ed4" size="20px" />
     <text class="label">Role</text>
     <text class="info-value">{{userInfo.role}}</text>
   </view>
 
   <view class="info-item">
-    <van-icon name="contact" color="#674ed4" size="18px" />
+    <van-icon name="contact" color="#674ed4" size="20px" />
     <text class="label">Name</text>
     <text class="info-value">{{userInfo.name}}</text>
   </view>
 
   <view class="info-item">
-    <van-icon name="invitation" color="#674ed4" size="18px" />
+    <van-icon name="invitation" color="#674ed4" size="20px" />
     <text class="label">E-mail</text>
     <text class="info-value">{{userInfo.email}}</text>
   </view>
 
   <view class="info-item">
-    <van-icon name="phone" color="#674ed4" size="18px" />
+    <van-icon name="phone" color="#674ed4" size="20px" />
     <text class="label">Phone</text>
     <text class="info-value">{{userInfo.phone}}</text>
   </view>
