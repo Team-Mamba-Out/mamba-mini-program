@@ -1,3 +1,5 @@
+const app = getApp();
+
 // pages/message/message.js
 Page({
 

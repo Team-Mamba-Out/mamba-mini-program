@@ -3,7 +3,10 @@
     <!-- 动态生成头像首字母 -->
     <text class="avatar-text">{{avatarText}}</text>
   </view>
-  <view class="welcome">Welcome, {{userInfo.name}}!🤗</view>
+  <view wx:if="{{userInfo.name}}" class="welcome">Welcome, {{userInfo.name}}!🤗</view>
+  <view wx:if="{{userInfo && !userInfo.name}}" class="welcome">Welcome, user!🤗 Please complete your personal information.
+  </view>
+  <view wx:if="{{!userInfo}}" class="welcome">Welcome, Tourist!🤗</view>
 </view>
 
 <!-- 信息列表 -->

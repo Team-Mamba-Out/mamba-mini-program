@@ -5,7 +5,7 @@
   </view>
 
   <!-- 欢迎标题 -->
-  <text class="title">Welcome to UoD!</text>
+  <text class="title">Welcome to DIISCU!</text>
 
   <!-- 输入框 -->
   <view class="input-wrapper">

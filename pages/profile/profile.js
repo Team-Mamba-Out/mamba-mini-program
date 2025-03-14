@@ -1,6 +1,6 @@
 Page({
   data: {
-    userInfo: {name:"Tourist", role: "Tourist"},
+    userInfo: null,
     active: 'profile',
     avatarText: 'T'  // 头像首字母
   },
@@ -37,6 +37,7 @@ Page({
   },
   onLoad(options) {
     const userInfo = wx.getStorageSync('userInfo');
+    console.log(12);
      if (!userInfo) {
        return
      }
@@ -52,6 +53,9 @@ Page({
 
   // 获取头像的首字母
   getAvatarText: function(name) {
+    if (!name) {
+      return
+    }
     const nameParts = name.split(' ');
     let avatarText = '';
     nameParts.forEach(part => {

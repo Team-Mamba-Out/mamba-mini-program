@@ -1,3 +1,5 @@
+const app = getApp();
+
 Page({
   data: {
     userInfo:null,
@@ -75,7 +77,7 @@ Page({
     console.log("Params before sending:", params); // 调试输出
 
     wx.request({
-      url: 'http://localhost:8080/rooms/getRooms',
+      url: `http://${app.globalData.baseUrl}:8080/rooms/getRooms`,
       method: 'GET',
       data: params,
       success: (res) => {
@@ -174,7 +176,7 @@ Page({
     }
     // 调用后端接口判断是否有权限
     wx.request({
-      url: `http://localhost:8080/records/allowReserve?roomId=${roomId}&userId=${userId}`,
+      url: `http://${app.globalData.baseUrl}:8080/records/allowReserve?roomId=${roomId}&userId=${userId}`,
       method: 'GET',
       success: (res) => {
         if (res.data.code === 200 && res.data.data === 'allow') {

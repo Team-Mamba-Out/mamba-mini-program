@@ -1,3 +1,4 @@
+const app = getApp();
 // pages/record/record.js
 Page({
 
@@ -21,7 +22,7 @@ Page({
   checkIn(e){
     let id = e.currentTarget.dataset.item.id
     wx.request({
-      url: 'http://172.20.10.6:8080/records/checkin',
+      url: `http://${app.globalData.baseUrl}:8080/records/checkin`,
       method:'PUT',
       data: {id}, // ✅ 发送表单数据
       header: { 
@@ -116,9 +117,9 @@ Page({
           let id = e.currentTarget.dataset.item.id
           console.log(id);
           wx.request({
-            url: 'http://localhost:8080/records/cancel',
+            url: `http://${app.globalData.baseUrl}:8080/records/cancel`,
             method:'PUT',
-            data: "id=123", // ✅ 发送表单数据
+            data: {id}, // ✅ 发送表单数据
             header: { 
                 'content-type': 'application/x-www-form-urlencoded' // ✅ 确保后端能解析
         },
@@ -136,7 +137,23 @@ Page({
     });
   },
   checkIn(e){
-    
+    let id = e.currentTarget.dataset.item.id
+    wx.request({
+      url: `http://${app.globalData.baseUrl}:8080/records/checkin`,
+      method:'PUT',
+      data: {id}, // ✅ 发送表单数据
+      header: { 
+              'content-type': 'application/x-www-form-urlencoded' // ✅ 确保后端能解析
+      },
+      success:(res)=>{
+        this.setData({
+          pageNum:1,
+          total:0,
+          records:[]
+        }),
+        this.getRecord()
+      }
+    })
   },
   onPullDownRefresh() {
     this.setData({
@@ -166,7 +183,7 @@ this.getRecord()
       title: 'loading...',
     })
     wx.request({
-      url: 'http://localhost:8080/records/getRecords',
+      url: `http://${app.globalData.baseUrl}:8080/records/getRecords`,
       data:{
       page:this.data.pageNum,
       size:5,
@@ -186,6 +203,7 @@ this.getRecord()
     };
     // 遍历 records，拆分日期并转换月份
     const formattedRecords = records.map(record => {
+    let recordTime =record.recordTime.replace("T"," ")
     const [date, time] = record.startTime.split("T"); // 拆分 `startTime` 的日期和时间
     const [year, month, day] = date.split("-"); // 拆分年月日
     const startTime = new Date(record.startTime.split("T")[0]); // 取 `2025-03-06`
@@ -207,7 +225,8 @@ this.getRecord()
     startTimeNoS: time.substring(0, 5), // `HH:mm`（去掉秒）
     endDate: endDate, // `YYYY-MM-DD`
     endTimeNoS: endTime.substring(0, 5), // `HH:mm`（去掉秒）
-    dueIn: dueInDays
+    dueIn: dueInDays,
+    recordTime
    };
   });
       // 更新数据

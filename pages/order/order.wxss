@@ -190,7 +190,7 @@
 }
 
 .check-in-btn {
-  background-color: #b0aafd;
+  background-color: #684edf;
   color: white;
 }
 

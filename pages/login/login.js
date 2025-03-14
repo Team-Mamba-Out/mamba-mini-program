@@ -1,3 +1,4 @@
+const app = getApp();
 // pages/login/login.js
 Page({
 
@@ -27,7 +28,7 @@ Page({
     let code = this.data.code
     let email = this.data.email
     wx.request({
-      url: `http://localhost:8080/verify/validate?email=${email}&codeInput=${code}`,
+      url: `http://${app.globalData.baseUrl}:8080/verify/validate?email=${email}&codeInput=${code}`,
       method:'GET',
       success:(res)=>{
         let token = res.data.data
@@ -36,7 +37,7 @@ Page({
         })
         wx.setStorageSync('token',token)
         wx.request({
-          url: 'http://localhost:8080/verify/getUserInfo',
+          url: `http://${app.globalData.baseUrl}:8080/verify/getUserInfo`,
           header:{
             Authorization:this.data.token
           },
@@ -65,12 +66,16 @@ Page({
       })
       return
     }
+    wx.showLoading({
+      title: 'Sending',
+    })
     wx.request({
-      url: `http://localhost:8080/verify/send?email=${email}`,
+      url: `http://${app.globalData.baseUrl}:8080/verify/send?email=${email}`,
       method:'GET',
       success:(res)=>{
+        wx.hideLoading();
         wx.showToast({
-          title: 'Send Successfully',
+          title: 'Done',
         })
       },
       fail:(res)=>{
