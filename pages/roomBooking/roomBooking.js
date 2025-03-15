@@ -1,3 +1,4 @@
+const app = getApp();
 Page({
   /**
    * 页面的初始数据
@@ -226,9 +227,14 @@ Page({
     const startDateTime = this.convertToLocalDateTime(this.data.selectedDate, this.data.startTime);
     const endDateTime = this.convertToLocalDateTime(this.data.selectedDate, this.data.endTime);
 
+    wx.showLoading({
+      title: 'Loading...',
+      mask: true
+    });
+
     // 提交数据到后端
     wx.request({
-      url: ' http://localhost:8080/records',
+      url: `http://${app.globalData.baseUrl}:8080/records`,
       method: 'POST',
       data: {
         roomId: this.data.room.id,
@@ -252,6 +258,9 @@ Page({
       fail: (err) => {
         wx.showToast({ title: '请求失败', icon: 'none' });
         console.error('Request failed', err);
+      },
+      complete: () => {
+        wx.hideLoading();
       }
     });
   },

@@ -1,3 +1,4 @@
+const app = getApp()
 Page({
 
   data: {
@@ -31,7 +32,7 @@ Page({
   loadScheduleDataFromBackend(roomId) {
     console.log(roomId);
     wx.request({
-      url: `http://localhost:8080/rooms/getBusyTime?id=${roomId}`,
+      url: `http://${app.globalData.baseUrl}:8080/rooms/getBusyTime?id=${roomId}`,
       method: 'GET',
       success: (res) => {
         if (res.data.code === 200) {

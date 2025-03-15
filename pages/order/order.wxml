@@ -1,12 +1,11 @@
-
 <view class="order-filter">
   <view bindtap="showOrderFilter" class="filter-wrap line1">
-    <view class="filter1" >{{ selectedOrderType }}</view>
-    <image src="/img/down.png" mode=""/>
+    <view class="filter1">{{ selectedOrderType }}</view>
+    <image src="/img/down.png" mode="" />
   </view>
   <view bindtap="showSortOptions" class="filter-wrap">
-    <view class="filter1" >{{ selectedTimeType }}</view>
-    <image src="/img/down.png" mode=""/>
+    <view class="filter1">{{ selectedTimeType }}</view>
+    <image src="/img/down.png" mode="" />
   </view>
 </view>
 <view class="container1">
@@ -22,7 +21,10 @@
           </view>
           <view class="status-wrap">
             <view class="due-badge {{item.status!='Pending' & item.status!='Ongoing' ? 'paid' : 'due'}}">
-              <text>{{item.status}}</text>
+              
+              <text wx:if="{{!item.approved && item.status === 'Pending'}}">Waiting</text>
+              <text wx:if="{{item.approved}}">{{item.status}}</text>
+            
             </view>
             <view class="date-wrap">
               <view class="date1">{{item.day}}</view>
@@ -37,10 +39,10 @@
           </view>
           <view class="bridge-wrap">
             <view class="total-time {{item.status=='Pending' | item.status=='Ongoing'? 'date-due':'' }}">
-            {{item.totalTime}} in total
+              {{item.totalTime}} in total
             </view>
             <view class="bridge {{item.status=='Pending' | item.status=='Ongoing'? 'time-due':'' }}">
-            ···················
+              ···················
             </view>
           </view>
           <view class="start-wrap">
@@ -49,8 +51,8 @@
           </view>
         </view>
         <view class="amount-wrap">
-            <text class="due-in" wx:if="{{!item.hasCheckedIn}}">Due in {{item.dueIn}} days</text>
-          </view>
+          <text class="due-in" wx:if="{{!item.hasCheckedIn}}">Due in {{item.dueIn}} days</text>
+        </view>
         <view class="bottom-container">
           <view class="ref-no"> Order: {{item.recordTime}}</view>
           <view class="actions">
@@ -58,13 +60,17 @@
             <button wx:if="{{item.allowCheckIn}}" bind:tap="checkIn" data-item="{{item}}" class="check-in-btn">Check in</button>
             <text wx:if="{{item.status=='Done' & item.hasCheckedIn}}" class="paid-text">✔ Finished</text>
             <text wx:if="{{item.status=='Overdue'}}" class="overdue-text">❌ Overdue</text>
-        </view>
+          </view>
         </view>
       </view>
     </block>
   </view>
 </view>
-<view>111</view>
+
+<view  style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <image wx:if="{{!showRecords}}" src="/img/Null Data.png" mode="" style="margin-bottom:10px;height: 30px; width: 30px;"/>
+  <text class="remind"> No more data here!</text>
+</view>
 <van-tabbar active="{{ active }}" active-color="#674ed4" inactive-color="#919191" bind:change="onChange">
   <van-tabbar-item name="index" icon="wap-home">Home</van-tabbar-item>
   <van-tabbar-item name="message" icon="comment">Message</van-tabbar-item>
