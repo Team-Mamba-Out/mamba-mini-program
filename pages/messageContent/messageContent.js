@@ -16,16 +16,20 @@ Page({
         isRead:false
       },
   },
-
+  
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    let icon = this.data.message.sender.match(/[A-Z]/g).join('')
-    console.log(icon);
+    let message = wx.getStorageSync('message')
+    let text = message.text.replace(/T/g, ' ')
+    message = {...message, sender:'System',text}
+    let icon = message.sender.match(/[A-Z]/g).join('')
     this.setData({
+      message,
       "message.icon":icon
     })
+    wx.setStorageSync('message', null)
   },
 
   /**

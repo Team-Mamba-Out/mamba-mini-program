@@ -2,16 +2,47 @@ Page({
   data: {
     userInfo: null,
     active: 'profile',
-    avatarText: 'T'  // 头像首字母
+    avatarText: 'T',  // 头像首字母
+    isEditing: false,
   },
-
+  modify(){
+    this.setData({
+      isEditing:true
+    })
+  },
+  cancel(){
+    this.setData({
+      isEditing:false
+    })
+  },
   onChange(event) {
     const activeTab = event.detail;
     wx.switchTab({
       url: `/pages/${activeTab}/${activeTab}`,
     });
   },
-  onShow(){
+  logout() {
+    wx.showModal({
+      title: 'Warning',
+      content: 'Confirm logout?',
+      complete: (res) => {
+        if (res.cancel) {
+          return
+        }
+        if (res.confirm) {
+          wx.setStorageSync('userInfo', null)
+          this.setData({
+            userInfo: null
+          })
+          this.setData({
+            avatarText:'T'
+          })
+          this.onLoad()
+        }
+      }
+    })
+  },
+  onShow() {
     const userInfo = wx.getStorageSync('userInfo');
     if (!userInfo) {
       wx.showModal({
@@ -27,20 +58,19 @@ Page({
       })
       return
     }
-    
+
     const avatarText = this.getAvatarText(userInfo.name);
     this.setData({
       userInfo,
       avatarText
     })
-    
+
   },
   onLoad(options) {
     const userInfo = wx.getStorageSync('userInfo');
-    console.log(12);
-     if (!userInfo) {
-       return
-     }
+    if (!userInfo) {
+      return
+    }
     // // 计算头像首字母
     const avatarText = this.getAvatarText(userInfo.name);
     this.setData({
@@ -52,7 +82,7 @@ Page({
 
 
   // 获取头像的首字母
-  getAvatarText: function(name) {
+  getAvatarText: function (name) {
     if (!name) {
       return
     }

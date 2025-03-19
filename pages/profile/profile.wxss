@@ -101,7 +101,44 @@
   position: relative;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
+.info-value, .info-input {
+  flex: 2;
+  color: #666;
+}
 
+.info-input {
+  text-align: right;
+  border-bottom: 1rpx solid rgb(209, 209, 209);
+  padding: 5rpx;
+  font-size: 30rpx;
+  margin-left: 25rpx;
+  font-weight: 500;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border-radius: 5rpx;
+}
+.buttons{
+  display: flex;
+}
+.cancel{
+  width: 47px;
+  margin-left: 32vh;
+  color: #979696;
+  border-bottom: 1rpx solid #979696;
+}
+.save{
+  width: 40px;
+  text-align: center;
+  color: #553C9A;
+  border-bottom: 1rpx solid #553C9A;
+  margin-left: 10px;
+}
+.modify{
+  margin-left: 40vh;
+}
+.modify image{
+  width: 20px;
+  height: 20px;
+}
 .item-hover {
   background: rgba(245, 243, 255, 0.5);
   transform: translateX(10rpx);

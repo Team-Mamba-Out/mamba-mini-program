@@ -17,9 +17,7 @@
 
   <!-- 邮件正文 -->
   <view class="email-content">
-    <text>In this week’s industrial seminar we will be joined by two University of Dundee alumni working at NCR.</text>
-    <text>NCR Atleos is known for its innovative solutions in the financial industry...</text>
-    <text>University of Dundee alumni, Duncan McDiarmid (Mechanical Engineering) and Adam Muir (Physics)...</text>
+    {{message.text}}
   </view>
 
   <view class="logo">

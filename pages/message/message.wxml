@@ -1,22 +1,42 @@
 <!--pages/message/message.wxml-->
 <view class="container1">
+  <view class="tab-container">
+    <view class="tab-item" bindtap="switchTab" data-tab="announcements">
+      <image wx:if="{{activeTab != 'announcements'}}" src="/img/notification.png" mode=""/>
+      <image wx:if="{{activeTab === 'announcements'}}" src="/img/notification-active.png" mode=""/>
+      <text class="{{ activeTab === 'announcements' ? 'active' : '' }}">Announcements</text>
+      <text class="badge1 {{activeTab === 'announcements' ? 'active-badge':''}}" wx:if="{{ unread.announcements > 0 }}">{{ unread.announcements }}</text>
+    </view>
+
+    <view class="tab-item" bindtap="switchTab" data-tab="messages">
+      <image wx:if="{{activeTab != 'messages'}}" src="/img/message.png" mode=""/>
+      <image wx:if="{{activeTab === 'messages'}}" src="/img/message-active.png" mode=""/>
+      <text class="{{ activeTab === 'messages' ? 'active' : '' }}">Messages</text>
+      <text class="badge2 {{activeTab === 'messages' ? 'active-badge':''}}" wx:if="{{ unread.messages > 0 }}">{{ unread.messages }}</text>
+    </view>
+    <view class="tab-underline" style="left: {{ activeTab === 'announcements' ? '0%' : '50%' }};"></view>
+  </view>
+
+  
   <!-- 消息列表 -->
   <scroll-view class="inbox-list" scroll-y>
     <block wx:for="{{messages}}" wx:key="id">
-      <navigator class="message-container  {{item.deleting ? 'message-container-deleting' : ''}}" hover-class="none" data-id="{{item.id}}" bind:tap="navigateToContent">
-        <view class="message {{item.expanded ? 'message-expanded' : ''}} " style="transform: translateX({{item.offset}}px);" data-index="{{index}}" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
-          <view class="isRead" wx:if="{{item.isRead}}"></view>
-          <view class="icon" style="background-color: {{item.iconColor}}">{{item.icon}}</view>
+      <view class="message-container  {{item.deleting ? 'message-container-deleting' : ''}}">
+        <view class="message {{item.expanded ? 'message-expanded' : ''}} " style="transform: translateX({{item.offset}}px);" data-index="{{index}}" data-id="{{item.id}}" bind:tap="navigateToContent" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
+          <view class="isRead" wx:if="{{!item.read}}"></view>
+          <view class="icon">
+            <image src="/img/System.png" mode="" />
+          </view>
           <view class="message-content">
             <view class="title">{{item.title}}</view>
-            <view class="description">{{item.description}}</view>
-            <view class="timestamp">{{item.timestamp}}</view>
+            <view class="description">{{item.shortContent}}</view>
+            <view class="timestamp">{{item.createTime}}</view>
           </view>
         </view>
-        <view class="delete-btn" data-index="{{index}}" bindtap="deleteMessage">
+        <view class="delete-btn" data-index="{{index}}" data-id="{{item.id}}" bindtap="deleteMessage">
           <image class="delete-icon" src="/img/delete.png" mode="" />
         </view>
-      </navigator>
+      </view>
     </block>
   </scroll-view>
 </view>
