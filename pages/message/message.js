@@ -7,106 +7,129 @@ Page({
    * 页面的初始数据
    */
   data: {
-    active: "message",
-    color:[],
-    messages: [
-      {
-        id: 1,
-        icon: "🏰",
-        iconColor: "#5c6bc0",
-        title: "Hogwarts",
-        subtitle: "General announcement",
-        description: "A 30-minute break will be given between two consecutive exams...",
-        timestamp: "Scheduled: 10 Feb 2021, 11:30 am",
-        offset: 0, // 记录滑动偏移量,
-        isRead:true
-      },
-      {
-        id: 2,
-        icon: "🧪",
-        iconColor: "#42a5f5",
-        title: "Chemistry X A",
-        subtitle: "General announcement",
-        description: "Examination papers will be mailed to registered mail IDs...",
-        timestamp: "12 Jan",
-        offset: 0,
-        isRead:true
-      },
-      {
-        id: 3,
-        icon: "📚",
-        iconColor: "#26a69a",
-        title: "Physics",
-        subtitle: "Examination",
-        description: "Teachers will be available in their respective classrooms...",
-        timestamp: "10 Jan",
-        offset: 0,
-        isRead:false
-      }
-    ],
+    activeTab: 'announcements',
+    active: "message",
+    typeMap: {
+      "Room Reservation Cancellation": 1,
+      "Reserve Room successfully": 2,
+      "Room Reservation Approved": 3
+    },
+    userInfo: null,
+    color: [],
+    messages: [],
+    unread: {
+      announcements: 3,
+      messages: 4
+    },
     startX: 0 // 记录滑动起点
   },
-// 开始触摸
-navigateToContent(e){
-  let id = e.currentTarget.dataset.id
-  wx.navigateTo({
-    url: '/pages/messageContent/messageContent?id=' + id,
-  })
-},
-touchStart(e) {
-  this.setData({ startX: e.touches[0].clientX });
-},
+  updateUnreadCount() {
+    const unreadCount = this.data.messages.filter(msg => !msg.read).length;
+    this.setData({
+      'unread.announcements': unreadCount
+    });
+  },
+  navigateToContent(e) {
+    let id = e.currentTarget.dataset.id
+    if (this.data.messages.some(item => item.id === id && item.read === false)) {
+      wx.request({
+        url: `http://${app.globalData.baseUrl}:8080/messages/read`,
+        method: 'POST',
+        data: {
+          id
+        },
+        fail:(err)=>{
+          console.log(err);
+        }
+      })
+    }
+    let message = this.data.messages.find(item => item.id === id)
+    wx.setStorageSync('message', message)
+    wx.navigateTo({
+      url: '/pages/messageContent/messageContent'
+    })
+  },
+  switchTab(e) {
+    this.setData({
+      activeTab: e.currentTarget.dataset.tab
+    });
+  },
+  touchStart(e) {
+    this.setData({ startX: e.touches[0].clientX });
+  },
+  getMessages() {
+    let uid = this.data.userInfo.uid
+    wx.request({
+      url: `http://${app.globalData.baseUrl}:8080/messages/getMessage/${uid}`,
+      method: 'GET',
+      success: (res) => {
+        let messages = res.data.data.messages
+        messages = messages.map(item => ({
+          ...item, offset: 0, type: this.data.typeMap[item.title] || 0, shortContent: item.text.length > 100 ? item.text.substring(0, 100) + '...' : item.text, createTime: item.createTime.replace("T", " "),senderId:item.sender.split(";")[0],sender:item.sender.split(";")[1]
+        }))
+        console.log(messages);
+        this.setData({
+          messages
+        })
+        this.updateUnreadCount()
+      }
+    })
+  },
+  // 触摸移动
+  touchMove(e) {
+    const index = e.currentTarget.dataset.index;
+    const moveX = e.touches[0].clientX - this.data.startX;
 
-// 触摸移动
-touchMove(e) {
-  const index = e.currentTarget.dataset.index;
-  const moveX = e.touches[0].clientX - this.data.startX;
-  
-  // 如果左滑且超过阈值 (-80px)，则显示删除按钮
-  let newOffset = moveX < -40 ? -40 : 0;
-  let expanded = newOffset < -10;
-  this.setData({
-    [`messages[${index}].offset`]: newOffset,
-    [`messages[${index}].expanded`]: expanded
-  });
-},
+    // 如果左滑且超过阈值 (-80px)，则显示删除按钮
+    let newOffset = moveX < -40 ? -40 : 0;
+    let expanded = newOffset < -10;
+    this.setData({
+      [`messages[${index}].offset`]: newOffset,
+      [`messages[${index}].expanded`]: expanded
+    });
+  },
 
-// 触摸结束
-touchEnd(e) {
-  const index = e.currentTarget.dataset.index;
-  const item = this.data.messages[index];
-  let expanded = item.offset < -20;
-  this.setData({
-    [`messages[${index}].offset`]: this.data.messages[index].offset,
-    [`messages[${index}].expanded`]: expanded
-  });
-},
+  // 触摸结束
+  touchEnd(e) {
+    const index = e.currentTarget.dataset.index;
+    const item = this.data.messages[index];
+    let expanded = item.offset < -20;
+    this.setData({
+      [`messages[${index}].offset`]: this.data.messages[index].offset,
+      [`messages[${index}].expanded`]: expanded
+    });
+  },
 
-onChange(event) {
-  const activeTab = event.detail;
-  wx.switchTab({
-    url: `/pages/${activeTab}/${activeTab}`,
-  });
-},
+  onChange(event) {
+    const activeTab = event.detail;
+    wx.switchTab({
+      url: `/pages/${activeTab}/${activeTab}`,
+    });
+  },
 
-// 删除消息
-deleteMessage(e) {
-  const index = e.currentTarget.dataset.index;
-  
-  // 先设置 deleting 状态，触发滑出动画
-  this.setData({ [`messages[${index}].deleting`]: true });
+  // 删除消息
+  deleteMessage(e) {
+    const id = e.currentTarget.dataset.id;
+    const index = e.currentTarget.dataset.index;
+    // 先设置 deleting 状态，触发滑出动画
+    this.setData({ [`messages[${index}].deleting`]: true });
 
-  // 延迟 300ms，等动画完成后再删除
-  setTimeout(() => {
-    let messages = this.data.messages;
-    messages.splice(index, 1);
-    this.setData({ messages });
-  }, 300); // 300ms 对应 CSS 的 transition 时间
-},
+    // 延迟 300ms，等动画完成后再删除
+    setTimeout(() => {
+      wx.request({
+        url: `http://${app.globalData.baseUrl}:8080/messages/delete/${id}`,
+        method:'DELETE',
+        success:()=>{
+          this.getMessages()
+        }
+      })
+    }, 500); // 300ms 对应 CSS 的 transition 时间
+  },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+
     this.setData({
       active: 'message',
     });
@@ -136,7 +159,25 @@ deleteMessage(e) {
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
+    let userInfo = wx.getStorageSync('userInfo')
+    this.setData({
+      userInfo
+    })
+    if (!userInfo) {
+      wx.showModal({
+        title: 'Warning',
+        content: 'Please log in before using.',
+        complete: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/login/login?url=order',
+            })
+          }
+        }
+      })
+      return
+    }
+    this.getMessages()
   },
 
   /**

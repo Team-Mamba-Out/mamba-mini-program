@@ -119,10 +119,10 @@ Page({
           wx.request({
             url: `http://${app.globalData.baseUrl}:8080/records/cancel`,
             method:'PUT',
-            data: {id}, // ✅ 发送表单数据
+            data: {id}, 
             header: { 
-                'content-type': 'application/x-www-form-urlencoded' // ✅ 确保后端能解析
-        },
+                'content-type': 'application/x-www-form-urlencoded' 
+          },
             success:(res)=>{
               this.setData({
                 pageNum:1,
@@ -162,6 +162,7 @@ Page({
       records:[]
     }),
     this.getRecord()
+    wx.stopPullDownRefresh()
   },
   onReachBottom() {
     if (this.data.pageNum * 5 >= this.data.total) {
