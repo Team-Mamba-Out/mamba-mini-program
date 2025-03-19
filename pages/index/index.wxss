@@ -32,7 +32,7 @@
 }
 
 .selector{
-  width: 50%;
+  width: 46%;
   margin: 0px auto;
 }
 
@@ -52,6 +52,13 @@
 .select-text{
   margin: 2px auto;
   font-weight: bold;
+}
+
+.select-text-time{
+  margin: 2px auto;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 13px;
 }
 
 .icon {
@@ -120,6 +127,11 @@
   font-size: 12px;
   text-align: center;
   font-weight: bold;
+}
+
+.Repairing{
+  color: #df4e4e;
+  border: 1.5px solid #df4e4e;
 }
 
 .right-section {

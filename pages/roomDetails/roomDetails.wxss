@@ -31,6 +31,13 @@
   padding: 5rpx;
 }
 
+.notice-name{
+  font-size: 38rpx;
+  font-weight: 600;
+  color: #333;
+  padding: 5rpx;
+}
+
 .status-tag {
   padding: 8rpx 24rpx;
   border-radius: 40rpx;
@@ -306,7 +313,7 @@
 }
 
 .description{
-  line-height: 40rpx;
-  color: #999;
+  line-height: 38rpx;
+  color: #666;
   font-size: 28rpx;
 }

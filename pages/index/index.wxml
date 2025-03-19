@@ -5,7 +5,7 @@
 
 <view class="container">
   <view class="select-container">
-    <picker mode="selector" range="{{deviceCategories}}" bindchange="onCategoryChange1" class="selector" style="margin-left: 5px;">
+    <picker mode="selector" range="{{deviceCategories}}" bindchange="onCategoryChange1" class="selector" style="margin-left: 15px;">
       <view class="select-box">
         <text class="select-text">{{selectedDevice}}</text>
         <text class="icon">▼</text>
@@ -22,18 +22,20 @@
   <wxs src="../../utils/formateDate.wxs" module="format" />
 
   <view class="select-container" style="margin-top: 15px; margin-bottom: -15px;">
-    <text class="time-prompt" style="margin-left: -5px;">From</text>
-    <view bindtap="showStartDateTimePicker" class="datetime-picker" style="width: 45%;">
+    <text class="time-prompt" style="margin-left: 0px; margin-right: -2px;">From</text>
+
+    <view bindtap="showStartDateTimePicker" class="datetime-picker" style="width: 50%;">
       <view class="select-box">
-        <text class="select-text">{{ format.formatDate(startDateTime) }}</text>
+        <text class="select-text-time">{{ startDateTime ? format.formatDate(startDateTime) : 'Start Time' }}</text>
         <text class="icon">▼</text>
       </view>
     </view>
 
-    <text class="time-prompt" style="margin-left: -10px;">to</text>
-    <view bindtap="showEndDateTimePicker" class="datetime-picker" style="width: 45%;">
+    <text class="time-prompt" style="margin-left: -12px;">to</text>
+
+    <view bindtap="showEndDateTimePicker" class="datetime-picker" style="width: 50%;">
       <view class="select-box">
-        <text class="select-text">{{ format.formatDate(endDateTime) }}</text>
+        <text class="select-text-time">{{ endDateTime ? format.formatDate(endDateTime) : 'End Time' }}</text>
         <text class="icon">▼</text>
       </view>
     </view>
@@ -41,12 +43,12 @@
 
   <!-- 开始时间选择器弹出层 -->
   <van-popup show="{{ showStartDateTimePickerVisible }}" position="bottom" custom-style="height: 60%;" bind:close="onStartDateTimeClose">
-    <van-datetime-picker type="datetime" value="{{ startDateTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" min-hour="8" max-hour="22" bind:input="onStartDateTimeInput" show-toolbar title="Pick Start Time" confirm-button-text="Confirm" cancel-button-text="Cancel" filter="{{ filter }}" bind:confirm="onStartDateTimeConfirm" bind:cancel="onStartDateTimeCancel" />
+    <van-datetime-picker type="datetime" value="{{ startDateTime }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" min-hour="8" max-hour="22" show-toolbar title="Pick Start Time" confirm-button-text="Confirm" cancel-button-text="Cancel" filter="{{ filter }}" bind:confirm="onStartDateTimeConfirm" bind:cancel="onStartDateTimeCancel" />
   </van-popup>
 
   <!-- 结束时间选择器弹出层 -->
   <van-popup show="{{ showEndDateTimePickerVisible }}" position="bottom" custom-style="height: 60%;" bind:close="onEndDateTimeClose">
-    <van-datetime-picker type="datetime" value="{{ endDateTime }}" min-date="{{ endMinDate }}" max-date="{{ maxDate }}" min-hour="8" max-hour="22" bind:input="onEndDateTimeInput" show-toolbar title="Pick End Time" confirm-button-text="Confirm" cancel-button-text="Cancel" filter="{{ filter }}" bind:confirm="onEndDateTimeConfirm" bind:cancel="onEndDateTimeCancel" />
+    <van-datetime-picker type="datetime" value="{{ endDateTime }}" min-date="{{ endMinDate }}" max-date="{{ maxDate }}" min-hour="8" max-hour="22" show-toolbar title="Pick End Time" confirm-button-text="Confirm" cancel-button-text="Cancel" filter="{{ filter }}" bind:confirm="onEndDateTimeConfirm" bind:cancel="onEndDateTimeCancel" />
   </van-popup>
 
 
@@ -61,7 +63,7 @@
           <view class="right-section">
             <view class="card-title">{{item.roomName}}</view>
             <view class="status-block">
-              <view class="live-tag">{{item.isBusy ? 'Busy' : 'Available'}}</view>
+              <view class="live-tag {{item.maintenance ? 'Repairing' : ''}}">{{item.maintenance ? 'Repairing' : 'Available'}}</view>
             </view>
             <!-- <view class="card-capacity">Capacity: {{item.capacity}}</view> -->
             <view class="card-location">{{item.location}}</view>
@@ -80,7 +82,7 @@
           <view class="right-section">
             <view class="card-title">{{item.roomName}}</view>
             <view class="status-block">
-              <view class="live-tag">{{item.isBusy ? 'Busy' : 'Available'}}</view>
+              <view class="live-tag {{item.maintenance ? 'Repairing' : ''}}">{{item.maintenance ? 'Repairing' : 'Available'}}</view>
             </view>
             <view class="card-location">{{item.location}}</view>
             <!-- <view class="card-capacity">Capacity: {{item.capacity}}</view> -->
@@ -99,7 +101,7 @@
           <view class="right-section">
             <view class="card-title">{{item.roomName}}</view>
             <view class="status-block">
-              <view class="live-tag">{{item.isBusy ? 'Busy' : 'Available'}}</view>
+              <view class="live-tag {{item.maintenance ? 'Repairing' : ''}}">{{item.maintenance ? 'Repairing' : 'Available'}}</view>
             </view>
             <!-- <view class="card-capacity">Capacity: {{item.capacity}}</view> -->
             <view class="card-location">{{item.location}}</view>

@@ -44,6 +44,7 @@
   </view>
 
   <view class="info-card">
+    <text class="notice-name" style="line-height: 30px;">Notice</text>
     <rich-text class="description" nodes="{{formattedDescription}}"></rich-text>
   </view>
 
@@ -58,8 +59,7 @@
       </view>
     </scroll-view>
 
-    <view wx:if="{{currentSchedule.length === 0}}" class="no-schedule-message" 
-    bindtap="handleBook" data-date="{{activeDate}}">
+    <view wx:if="{{currentSchedule.length === 0}}" class="no-schedule-message" bindtap="handleBook" data-date="{{activeDate}}">
       <text>No arrangement for today. </text>
       <text style="border-bottom: 1px solid #333; font-style: italic;">Click to book now!</text> 😊
     </view>

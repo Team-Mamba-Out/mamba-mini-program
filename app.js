@@ -15,6 +15,6 @@ App({
   },
   globalData: {
     userInfo: null,
-    baseUrl:'192.168.43.219'
+    baseUrl:'localhost'
   }
 })

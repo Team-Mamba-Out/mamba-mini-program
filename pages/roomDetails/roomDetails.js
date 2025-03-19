@@ -23,9 +23,12 @@ Page({
 
     // 假设你已经通过 wx.request 获取了后端返回的时间段数据
     this.loadScheduleDataFromBackend(this.data.room.id);
+    this.loadMaintenanceDataFromBackend(this.data.room.id);
   },
   onShow() {
     this.loadScheduleDataFromBackend(this.data.room.id);
+    this.loadMaintenanceDataFromBackend(this.data.room.id);
+    this.updateSchedule();
   },
 
   // 从后端加载并转换日程数据
@@ -53,14 +56,90 @@ Page({
     });
   },
 
+  loadMaintenanceDataFromBackend(roomId) {
+    wx.request({
+      url: `http://${app.globalData.baseUrl}:8080/rooms/getMaintenance?id=${roomId}`,
+      method: 'GET',
+      success: (res) => {
+        console.log(res);
+        if (res.data.code === 200) {
+          const maintenancePeriods = res.data.data;
+          const maintenanceData = this.processMaintenanceData(maintenancePeriods);
+          
+          // 合并维修时间和日程数据
+          const combinedScheduleData = { ...this.data.scheduleData };
+          
+          // 合并维修数据
+          for (const dateKey in maintenanceData) {
+            if (!combinedScheduleData[dateKey]) {
+              combinedScheduleData[dateKey] = [];
+            }
+            // 将维修时间添加到已有的 scheduleData 中
+            combinedScheduleData[dateKey] = [
+              ...combinedScheduleData[dateKey],
+              ...maintenanceData[dateKey]
+            ];
+          }
+
+          // 更新合并后的日程数据
+          this.setData({
+            scheduleData: combinedScheduleData
+          });
+          this.updateSchedule();  // 更新日程
+        } else {
+          console.error('Failed to load maintenance schedule data.', res);
+        }
+      },
+      fail: (err) => {
+        console.error('Request failed', err);
+      }
+    });
+  },
+
+  // 处理从后端返回的维修时间段数据
+  processMaintenanceData(maintenancePeriods) {
+    const maintenanceData = {};
+
+    maintenancePeriods.forEach(period => {
+      const start = new Date(period[0]);  // 将时间字符串转换为 Date 对象
+      const end = new Date(period[1]);
+
+      // 如果 start 和 end 不是有效的 Date 对象，跳过
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        console.error('Invalid date:', period);
+        return;
+      }
+
+      // 格式化日期和时间
+      const dateKey = start.toISOString().split('T')[0];  // 'yyyy-mm-dd'
+      const startTime = this.formatTime(start);
+      const endTime = this.formatTime(end);
+
+      // 确保日期的条目存在
+      if (!maintenanceData[dateKey]) {
+        maintenanceData[dateKey] = [];
+      }
+
+      // 添加维修时间到对应日期的数据，标题为 'repair'
+      maintenanceData[dateKey].push({
+        startTime: startTime,
+        endTime: endTime,
+        status: 'busy',
+        title: 'Repair'
+      });
+    });
+
+    return maintenanceData;
+  },
+
   // 处理从后端返回的时间段数据
   processScheduleData(roomRecordPeriods) {
     const scheduleData = {};
 
     roomRecordPeriods.forEach(recordPeriod => {
       // 确保转换时间为 Date 对象
-      const start = new Date(recordPeriod[0]);  // 将时间字符串转换为 Date 对象
-      const end = new Date(recordPeriod[1]);
+      const start = new Date(recordPeriod.startTime);  // 将时间字符串转换为 Date 对象
+      const end = new Date(recordPeriod.endTime);
 
       // 如果 start 和 end 不是有效的 Date 对象，跳过
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
@@ -73,6 +152,12 @@ Page({
       const startTime = this.formatTime(start);
       const endTime = this.formatTime(end);
 
+      // 根据 uid 来判断日程标题
+      let title = 'Reserved';  // 默认值为 'reserved'
+      if (recordPeriod.uid === 1) {
+        title = 'Class';
+      }
+
       // 确保日期的条目存在
       if (!scheduleData[dateKey]) {
         scheduleData[dateKey] = [];
@@ -83,7 +168,7 @@ Page({
         startTime: startTime,
         endTime: endTime,
         status: 'busy',
-        title: 'Occupied'
+        title: title
       });
     });
 
@@ -118,13 +203,13 @@ Page({
 
     this.setData({ currentSchedule: processed });
   },
+
   formatDescription() {
     let description = this.data.room.description;
+    description = description.replace('Key Points:', '<div style="margin: 5px; font-weight: bold;">Key Points:</div>');
 
-    // 1. 将"Key Points:"加粗
-    description = description.replace('Key Points:', '<br><br><b>Key Points:</b><br>');
+    description = `<div style="margin: 5px; margin-bottom: -5px;">${description}</div>`;
 
-    // 3. 更新到 data 中
     this.setData({
       formattedDescription: description
     });
