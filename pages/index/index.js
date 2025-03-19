@@ -2,7 +2,7 @@ const app = getApp();
 
 Page({
   data: {
-    userInfo:null,
+    userInfo: null,
     active: 'index',
     deviceCategories: ['All devices', 'Multimedia', 'Projector'],
     capacityCategories: ['All capacities', 'less than 15', '15-35', '35-60'],
@@ -10,8 +10,8 @@ Page({
     selectedCapacity: 'All capacities',
     minDate: new Date().getTime(),
     maxDate: new Date().setDate(new Date().getDate() + 7),
-    startDateTime: null,       // 初始为null显示提示
-    endDateTime: null,         // 初始为null显示提示
+    startDateTime: null,       // 初始化为null
+    endDateTime: null,         // 初始化为null
     endMinDate: null,
     showStartDateTimePickerVisible: false,
     showEndDateTimePickerVisible: false,
@@ -24,106 +24,81 @@ Page({
       if (type === 'minute') return options.filter(option => option % 30 === 0);
       return options;
     },
-
-    // 初始化空数据
     rooms: [],
     teachingRooms: [],
     activitiesRooms: [],
     meetingRooms: []
   },
 
-  // 加载房间数据
   loadRooms() {
     const params = {};
 
-    // 只有在选择了设备类别时才传递 `multimedia` 和 `projector`
+    // 设备筛选
     if (this.data.selectedDevice === 'Multimedia') {
       params.multimedia = true;
     } else if (this.data.selectedDevice === 'Projector') {
       params.projector = true;
     }
 
-    // 处理时间筛选
-    if (this.data.startDateTime) {
-      const localStartTime = new Date(this.data.startDateTime);
+    // 时间筛选（仅当同时存在时传递）
+    if (this.data.startDateTime && this.data.endDateTime) {
+      const formatTime = (timestamp) => {
+        const date = new Date(timestamp);
+        // 转换为本地时间（避免时区问题）
+        const localTime = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+        const isoString = localTime.toISOString().split('.')[0]; 
+        return isoString.slice(0, 16); 
+      };
 
-      // 获取本地时区偏差（单位：分钟）
-      const timezoneOffset = localStartTime.getTimezoneOffset();
-
-      // 加上时区差
-      localStartTime.setMinutes(localStartTime.getMinutes() - timezoneOffset);
-
-      // 将本地时间转为ISO格式并去掉毫秒部分
-      const startTimeString = localStartTime.toISOString().split('.')[0];  // 去掉毫秒部分
-      params.start = startTimeString;
-      if (this.data.endDateTime) {
-        const localEndTime = new Date(this.data.endDateTime);
-
-        // 获取本地时区偏差（单位：分钟）
-        const timezoneOffset = localEndTime.getTimezoneOffset();
-
-        // 加上时区差
-        localEndTime.setMinutes(localEndTime.getMinutes() - timezoneOffset);
-
-        // 将本地时间转为ISO格式并去掉毫秒部分
-        const endTimeString = localEndTime.toISOString().split('.')[0];  // 去掉毫秒部分
-        params.end = endTimeString;
-      }
-      else {
-        return;
-      }
+      params.start = formatTime(this.data.startDateTime);
+      params.end = formatTime(this.data.endDateTime);
     }
 
-    console.log("Params before sending:", params); // 调试输出
+    console.log(params);
 
+    // 容量筛选（前端处理）
+    let rooms = [];
     wx.request({
       url: `http://${app.globalData.baseUrl}:8080/rooms/getRooms`,
       method: 'GET',
       data: params,
       success: (res) => {
-        console.log("API Success Response:", res);
-        if (res.data && res.data.code === 200) {
-          let rooms = res.data.data.rooms || [];
+        if (res.data?.code === 200) {
+          rooms = res.data.data.rooms || [];
 
-          // 前端容量筛选
           if (this.data.selectedCapacity !== 'All capacities') {
             const capacityMap = {
               'less than 15': cap => cap < 15,
               '15-35': cap => cap >= 15 && cap <= 35,
               '35-60': cap => cap > 35 && cap <= 60
             };
-
-            if (capacityMap[this.data.selectedCapacity]) {
-              rooms = rooms.filter(room =>
-                capacityMap[this.data.selectedCapacity](room.capacity)
-              );
-            }
+            rooms = rooms.filter(room =>
+              capacityMap[this.data.selectedCapacity](room.capacity)
+            )
           }
 
-          // 分类房间（假设后端返回的roomType是数字）
-          const teachingRooms = rooms.filter(room => room.roomType === 1);
-          const activitiesRooms = rooms.filter(room => room.roomType === 3);
-          const meetingRooms = rooms.filter(room => room.roomType === 2);
-
           this.setData({
-            rooms,
-            teachingRooms,
-            activitiesRooms,
-            meetingRooms
+            rooms: rooms,
           });
+
+          this.classifyRooms(rooms);
+
+          console.log(res.data.data.rooms);
         }
       },
-      fail: (err) => {
-        console.error("API Error:", err);
-        this.handleDataError();
-      },
-      complete: () => {
-        wx.hideLoading();
-      }
+      complete: () => wx.hideLoading()
     });
   },
 
-  onShow(){
+  classifyRooms(rooms) {
+    const teachingRooms = rooms.filter(room => room.roomType === 1);
+    const activitiesRooms = rooms.filter(room => room.roomType === 3);
+    const meetingRooms = rooms.filter(room => room.roomType === 2);
+
+    this.setData({ teachingRooms, activitiesRooms, meetingRooms });
+  },
+
+  onShow() {
     let userInfo = wx.getStorageSync('userInfo')
     this.setData({
       userInfo
@@ -134,25 +109,23 @@ Page({
       title: 'Loading...',
       mask: true
     });
+
     let userInfo = wx.getStorageSync('userInfo')
     this.setData({
       userInfo
     })
-    // 初始化时加载房间数据
-    this.loadRooms();
 
-    const currentTime = new Date().getTime();
-    const minTime = this.updateMinTime(currentTime);
-    // 初始结束时间最小值为开始时间+30分钟
-    const endMinDate = minTime + 1800000;
+    const currentDate = new Date();
+    const minDate = this.updateMinTime(currentDate.getTime());
 
     this.setData({
       active: 'index',
-      startDateTime: minTime,
-      endDateTime: minTime + 1800000, // 默认结束时间比开始晚1小时
-      minDate: minTime,
-      endMinDate: endMinDate
+      minDate: minDate,
+      maxDate: new Date().setDate(currentDate.getDate() + 7),
+      endMinDate: minDate + 1800000
     });
+
+    this.loadRooms(); // 初始加载所有数据
   },
 
   goToDetails: function (e) {
@@ -161,18 +134,18 @@ Page({
     const roomsString = JSON.stringify(rooms);
     const userId = this.data.userInfo.uid;
     if (!this.data.userInfo) {
-        wx.showModal({
-          title: 'Warning',
-          content: 'Please log in before using.',
-          complete: (res) => {
-            if (res.confirm) {
-              wx.navigateTo({
-                url: '/pages/login/login?url=index',
-              })
-            }
+      wx.showModal({
+        title: 'Warning',
+        content: 'Please log in before using.',
+        complete: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/login/login?url=index',
+            })
           }
-        })
-        return
+        }
+      })
+      return
     }
     // 调用后端接口判断是否有权限
     wx.request({
@@ -270,41 +243,35 @@ Page({
     });
   },
 
-  // 更新开始时间
-  onStartDateTimeInput(event) {
-    this.setData({
-      startDateTime: event.detail,
-    });
-  },
+  // // 更新开始时间
+  // onStartDateTimeInput(event) {
+  //   this.setData({
+  //     startDateTime: event.detail,
+  //   });
+  // },
 
-  // 更新结束时间
-  onEndDateTimeInput(event) {
-    this.setData({
-      endDateTime: event.detail,
-    });
-  },
+  // // 更新结束时间
+  // onEndDateTimeInput(event) {
+  //   this.setData({
+  //     endDateTime: event.detail,
+  //   });
+  // },
 
   onStartDateTimeConfirm(e) {
     const startDateTime = e.detail;
-    const endMinDate = startDateTime + 1800000;
-
     this.setData({
       startDateTime,
-      endMinDate,
-      showStartDateTimePickerVisible: false,
-      endDateTime: null // 重置结束时间
-    }, () => {
-      this.loadRooms();
-    });
+      endMinDate: startDateTime + 1800000,
+      endMinDate: startDateTime + 1800000,
+      showStartDateTimePickerVisible: false
+    }, () => this.loadRooms()); // 每次选择后都重新加载
   },
 
-  onEndDateTimeConfirm(event) {
+  onEndDateTimeConfirm(e) {
     this.setData({
-      endDateTime: event.detail,
-      showEndDateTimePickerVisible: false,
-    }, () => {
-      this.loadRooms();
-    });
+      endDateTime: e.detail,
+      showEndDateTimePickerVisible: false
+    }, () => this.loadRooms()); // 每次选择后都重新加载
   },
 
   // 点击取消时关闭开始时间选择器
