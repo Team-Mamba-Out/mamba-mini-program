@@ -1,0 +1,42 @@
+<view class="page-title">
+  Contact with our Admin! 👨‍💻
+</view>
+<view class="container">
+  <view class="section">
+    <text class="section-title">Message Type</text>
+    <view class="tag-container">
+      <view wx:for="{{typeLabels}}" wx:key="index" class="tag {{activeType === index ? 'active' : ''}}" data-index="{{index}}" bindtap="selectType">
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 教室选择 -->
+  <view class="section">
+    <text class="section-title">Related Classroom (optional)</text>
+    <view class="picker" bindtap="showPicker">
+      <text>{{selectedRoom ? selectedRoom.roomName : 'Select classroom'}}</text>
+    </view>
+
+    <!-- 修改picker部分 -->
+    <view class="picker-modal" wx:if="{{showPickerModal}}" bindtap="closePicker" catchtouchmove="preventScroll">
+      <view class="picker-modal-content {{showPickerModal ? '' : 'close'}}">
+        <view wx:for="{{rooms}}" wx:key="id" class="picker-item {{selectedRoom && selectedRoom.id === item.id ? 'active' : ''}}" data-index="{{index}}" bindtap="selectRoom">
+          <text>{{item.roomName}}</text>
+          <text wx:if="{{selectedRoom && selectedRoom.id === item.id}}" class="selected-icon">✓</text>
+        </view>
+        <view class="cancel" bindtap="closePicker">Cancel</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 消息内容 -->
+  <view class="section">
+    <text class="section-title">Message Content</text>
+    <textarea class="message-input" placeholder="Please describe your request..." bindinput="onContentChange" maxlength="500">{{content}}</textarea>
+  </view>
+
+  <view class="submit-container">
+    <button class="submit-btn" bindtap="submit" loading="{{loading}}">Submit</button>
+  </view>
+</view>

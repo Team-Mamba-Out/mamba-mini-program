@@ -7,8 +7,8 @@
     "pages/roomDetails/roomDetails",
     "pages/roomBooking/roomBooking",
     "pages/messageContent/messageContent",
-    "pages/login/login"
-
+    "pages/login/login",
+    "pages/sendMessage/sendMessage"
   ],
   "usingComponents": {
     "van-tabbar": "@vant/weapp/tabbar/index",

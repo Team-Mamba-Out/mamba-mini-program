@@ -315,4 +315,27 @@ Page({
 
     return currentDate.getTime();
   },
+
+  goToSendMessage() {
+    if (!this.data.userInfo) {
+      wx.showModal({
+        title: 'Warning',
+        content: 'Please log in first',
+        complete: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/login/login?url=index',
+            });
+          }
+        }
+      });
+      return;
+    }
+
+    const roomsData = JSON.stringify(this.data.rooms); 
+    const activeRoomID = '';
+    wx.navigateTo({
+      url: `/pages/sendMessage/sendMessage?rooms=${encodeURIComponent(roomsData)}&activeRoomID=${activeRoomID}`
+    });
+  }
 });

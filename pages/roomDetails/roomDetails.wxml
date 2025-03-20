@@ -84,3 +84,7 @@
   </view>
 
 </view>
+
+<view class="float-button" bindtap="goToSendMessage">
+  <van-icon name="service" class="button-icon" color="white" size="20px" />
+</view>
