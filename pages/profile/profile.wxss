@@ -94,10 +94,9 @@
   z-index: 3;
 }
 .tips{
-  
   position: absolute;
-  right: 13px;
-  bottom: 2px;
+  left: 100px;
+  bottom: 40px;
 }
 .tips image{
   width: 13px;
@@ -136,22 +135,32 @@
 }
 .buttons{
   display: flex;
+  margin-top: 5rpx;
 }
 .cancel{
-  width: 47px;
-  margin-left: 32vh;
+  font-size: 28rpx;
+  width: 55px;
+  margin-left: 28vh;
   color: #979696;
   border-bottom: 1rpx solid #979696;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .save{
-  width: 40px;
+  font-size: 28rpx;
+  width: 50px;
   text-align: center;
   color: #553C9A;
   border-bottom: 1rpx solid #553C9A;
-  margin-left: 10px;
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .modify{
   margin-left: 40vh;
+  padding: 5rpx;
 }
 .modify image{
   width: 20px;

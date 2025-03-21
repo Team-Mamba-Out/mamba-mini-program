@@ -15,7 +15,8 @@
     "van-tabbar-item": "@vant/weapp/tabbar-item/index",
     "van-image": "@vant/weapp/image/index",
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",
-    "van-popup": "@vant/weapp/popup/index"
+    "van-popup": "@vant/weapp/popup/index",
+    "van-icon": "@vant/weapp/icon/index"
   },
   "tabBar": {
     "custom": true,
@@ -36,7 +37,7 @@
   },
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "Booking System",
     "navigationBarBackgroundColor": "#ffffff"
   },
   "componentFramework": "glass-easel",
