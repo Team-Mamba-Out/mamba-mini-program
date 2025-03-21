@@ -1,99 +1,138 @@
 const app = getApp()
-Page({
 
+Page({
   data: {
     room: {},
     rooms: [],
-    dateList: [],      // 日期列表
-    activeDate: '',    // 当前选中日期
-    timeLabels: [],    // 时间刻度
-    currentSchedule: [], // 当前日程数据
-    room: {},          // 教室数据
+    dateList: [],
+    activeDate: '',
+    timeLabels: [],
+    currentSchedule: [],
     scheduleData: {},
-    formattedDescription: ''
+    maintenanceData: {},
+    formattedDescription: '',
+    isLoading: true, // 添加加载状态
   },
-  onLoad(options) {
-    // 初始化日期数据
+
+  async onLoad(options) {
     this.generateDateList(7);
-    // 生成时间刻度
     this.generateTimeLabels();
-    // 加载教室数据
     this.loadRoomData(options);
     this.formatDescription();
 
-    // 假设你已经通过 wx.request 获取了后端返回的时间段数据
-    this.loadScheduleDataFromBackend(this.data.room.id);
-    this.loadMaintenanceDataFromBackend(this.data.room.id);
+    // 使用 async/await 来确保数据加载完成
+    await this.loadData(options.id);
   },
-  onShow() {
-    this.loadScheduleDataFromBackend(this.data.room.id);
-    this.loadMaintenanceDataFromBackend(this.data.room.id);
-    this.updateSchedule();
+
+  // 封装加载数据的逻辑
+  async loadData(roomId) {
+    try {
+      this.setData({ isLoading: true }); // 设置为加载中状态
+
+      // 等待 schedule 和 maintenance 数据加载完成
+      await Promise.all([
+        this.loadScheduleDataFromBackend(roomId),
+        this.loadMaintenanceDataFromBackend(roomId)
+      ]);
+
+      this.updateSchedule();  // 确保两个数据都加载完后再更新日程
+      this.setData({ isLoading: false }); // 数据加载完成，设置为已加载状态
+    } catch (error) {
+      console.error('Error loading data:', error);
+      this.setData({ isLoading: false }); // 设置为加载完成状态，即使加载失败
+    }
   },
 
   // 从后端加载并转换日程数据
   loadScheduleDataFromBackend(roomId) {
-    console.log(roomId);
-    wx.request({
-      url: `http://${app.globalData.baseUrl}:8080/rooms/getBusyTime?id=${roomId}`,
-      method: 'GET',
-      success: (res) => {
-        if (res.data.code === 200) {
-          const roomRecordPeriods = res.data.data;
-          const scheduleData = this.processScheduleData(roomRecordPeriods);
-          this.setData({
-            scheduleData: scheduleData
-          });
-          this.updateSchedule();  // 重新计算并更新当前的日程
-          console.log(this.data.scheduleData);
-        } else {
-          console.error('Failed to load room schedule data.', res);
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `http://${app.globalData.baseUrl}:8080/rooms/getBusyTime?id=${roomId}`,
+        method: 'GET',
+        success: (res) => {
+          if (res.data.code === 200) {
+            const roomRecordPeriods = res.data.data;
+            const scheduleData = this.processScheduleData(roomRecordPeriods);
+            this.setData({
+              scheduleData: scheduleData
+            });
+            resolve();  // 成功时调用 resolve
+          } else {
+            console.error('Failed to load room schedule data.', res);
+            reject('Failed to load schedule data');  // 错误时调用 reject
+          }
+        },
+        fail: (err) => {
+          console.error('Request failed', err);
+          reject(err);  // 请求失败时调用 reject
         }
-      },
-      fail: (err) => {
-        console.error('Request failed', err);
-      }
+      });
     });
   },
 
   loadMaintenanceDataFromBackend(roomId) {
-    wx.request({
-      url: `http://${app.globalData.baseUrl}:8080/rooms/getMaintenance?id=${roomId}`,
-      method: 'GET',
-      success: (res) => {
-        console.log(res);
-        if (res.data.code === 200) {
-          const maintenancePeriods = res.data.data;
-          const maintenanceData = this.processMaintenanceData(maintenancePeriods);
-          
-          // 合并维修时间和日程数据
-          const combinedScheduleData = { ...this.data.scheduleData };
-          
-          // 合并维修数据
-          for (const dateKey in maintenanceData) {
-            if (!combinedScheduleData[dateKey]) {
-              combinedScheduleData[dateKey] = [];
-            }
-            // 将维修时间添加到已有的 scheduleData 中
-            combinedScheduleData[dateKey] = [
-              ...combinedScheduleData[dateKey],
-              ...maintenanceData[dateKey]
-            ];
-          }
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `http://${app.globalData.baseUrl}:8080/rooms/getMaintenance?id=${roomId}`,
+        method: 'GET',
+        success: (res) => {
+          if (res.data.code === 200) {
+            const maintenancePeriods = res.data.data;
+            const maintenanceData = this.processMaintenanceData(maintenancePeriods);
 
-          // 更新合并后的日程数据
-          this.setData({
-            scheduleData: combinedScheduleData
-          });
-          this.updateSchedule();  // 更新日程
-        } else {
-          console.error('Failed to load maintenance schedule data.', res);
+            // 合并维修时间和日程数据
+            const combinedScheduleData = { ...this.data.scheduleData };
+
+            for (const dateKey in maintenanceData) {
+              if (!combinedScheduleData[dateKey]) {
+                combinedScheduleData[dateKey] = [];
+              }
+
+              combinedScheduleData[dateKey] = this.mergeSchedules(
+                combinedScheduleData[dateKey],
+                maintenanceData[dateKey]
+              );
+            }
+
+            this.setData({
+              scheduleData: combinedScheduleData,
+              maintenanceData: maintenanceData, // 保存维修数据
+            });
+            resolve();  // 成功时调用 resolve
+          } else {
+            console.error('Failed to load maintenance schedule data.', res);
+            reject('Failed to load maintenance data');  // 错误时调用 reject
+          }
+        },
+        fail: (err) => {
+          console.error('Request failed', err);
+          reject(err);  // 请求失败时调用 reject
         }
-      },
-      fail: (err) => {
-        console.error('Request failed', err);
+      });
+    });
+  },
+
+  // 合并日程数据的辅助函数
+  mergeSchedules(existingSchedules, newSchedules) {
+    const mergedSchedules = [...existingSchedules];
+
+    // 将新的维修时间段添加到已有的日程中
+    newSchedules.forEach(newSchedule => {
+      // 检查是否已经存在相同时间段，避免重复
+      const isDuplicate = mergedSchedules.some(schedule =>
+        schedule.startTime === newSchedule.startTime && schedule.endTime === newSchedule.endTime
+      );
+
+      if (!isDuplicate) {
+        mergedSchedules.push(newSchedule);  // 不重复的就添加进去
       }
     });
+    return mergedSchedules;
+  },
+
+  async onShow() {
+    const roomId = this.data.room.id;
+    await this.loadData(roomId);  // 使用 roomId 来加载数据
   },
 
   // 处理从后端返回的维修时间段数据
@@ -101,8 +140,8 @@ Page({
     const maintenanceData = {};
 
     maintenancePeriods.forEach(period => {
-      const start = new Date(period[0]);  // 将时间字符串转换为 Date 对象
-      const end = new Date(period[1]);
+      const start = new Date(period.startTime);  // 将时间字符串转换为 Date 对象
+      const end = new Date(period.endTime);
 
       // 如果 start 和 end 不是有效的 Date 对象，跳过
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
@@ -120,7 +159,7 @@ Page({
         maintenanceData[dateKey] = [];
       }
 
-      // 添加维修时间到对应日期的数据，标题为 'repair'
+      // 添加维修时间到对应日期的数据，标题为 'Repair'
       maintenanceData[dateKey].push({
         startTime: startTime,
         endTime: endTime,
@@ -244,7 +283,10 @@ Page({
     const roomId = options.id;
     const rooms = JSON.parse(decodeURIComponent(options.rooms));
     const room = rooms.find(r => r.id === parseInt(roomId));
-    this.setData({ room });
+    this.setData({
+      room: room,
+      rooms: rooms
+    });
   },
 
   // 生成时间轴刻度
@@ -322,4 +364,11 @@ Page({
       }
     });
   },
+  goToSendMessage() {
+    const roomsData = JSON.stringify(this.data.rooms);
+    const activeRoomID = this.data.room.id;
+    wx.navigateTo({
+      url: `/pages/sendMessage/sendMessage?rooms=${encodeURIComponent(roomsData)}&activeRoomID=${activeRoomID}`
+    });
+  }
 })

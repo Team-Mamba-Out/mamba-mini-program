@@ -5,14 +5,14 @@ Page({
     avatarText: 'T',  // 头像首字母
     isEditing: false,
   },
-  modify(){
+  modify() {
     this.setData({
-      isEditing:true
+      isEditing: true
     })
   },
-  cancel(){
+  cancel() {
     this.setData({
-      isEditing:false
+      isEditing: false
     })
   },
   onChange(event) {
@@ -35,7 +35,7 @@ Page({
             userInfo: null
           })
           this.setData({
-            avatarText:'T'
+            avatarText: 'T'
           })
           this.onLoad()
         }

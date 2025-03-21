@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "van-tag": "@vant/weapp/tag/index",
+    "van-field": "@vant/weapp/field/index",
+    "van-button": "@vant/weapp/button/index"
+  },
+  "navigationBarTitleText": "Service Center"
+}

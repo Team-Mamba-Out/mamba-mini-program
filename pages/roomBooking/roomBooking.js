@@ -247,7 +247,12 @@ Page({
         console.log(res);
         if (res.statusCode === 200) {
           wx.showToast({ title: 'Booking Successfully!', icon: 'success' });
-          wx.navigateBack();
+          wx.navigateBack({
+            delta: 1,
+            success: () => {
+              this.onShow(); 
+            }
+          });
           if (res.data.code === 500) {
             wx.showToast({ title: 'Occupied Successfully! Please wait for approval.', icon: 'success' });
           }

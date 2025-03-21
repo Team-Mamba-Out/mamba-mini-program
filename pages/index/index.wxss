@@ -161,3 +161,24 @@
   color: #333;
   padding-left: 4px;
 }
+
+/* 悬浮按钮样式 */
+.float-button {
+  position: fixed;
+  right: 30rpx;
+  bottom: 15vh;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  box-shadow: 0 8rpx 16rpx rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  background-color: #684edf;
+}
+
+.button-icon {
+  width: 100rpx;
+  height: 100rpx;
+}
