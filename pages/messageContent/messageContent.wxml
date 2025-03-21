@@ -19,7 +19,10 @@
   <view class="email-content">
     {{message.text}}
   </view>
-
+  <view wx:if="{{message.title==='Room Reassignment Notification'}}" class="buttons">
+    <button bind:tap="reject" class="reject">Reject</button>
+    <button bind:tap="accept" class="accept">Accept</button>
+  </view>
   <view class="logo">
     <image src="/img/logo.jpg" mode=""/>
   </view>

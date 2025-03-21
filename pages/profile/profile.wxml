@@ -8,7 +8,6 @@
   </view>
   <view wx:if="{{!userInfo}}" class="welcome">Welcome, Tourist!🤗</view>
 </view>
-
 <view class="info-list">
   <view class="buttons">
     <view class="modify" bind:tap="modify" wx:if="{{!isEditing}}">
@@ -25,7 +24,7 @@
     <van-icon name="coupon" color="#674ed4" size="20px" />
     <text class="label">Role</text>
     <block wx:if="{{isEditing}}">
-      <input class="info-input" bindinput="handleInput" data-field="role" value="{{userInfo.role}}" />
+      <input disabled class="info-input" bindinput="handleInput" data-field="role" value="{{userInfo.role}}" />
     </block>
     <block wx:else>
       <text class="info-value">{{userInfo.role}}</text>
@@ -47,7 +46,7 @@
     <van-icon name="invitation" color="#674ed4" size="20px" />
     <text class="label">E-mail</text>
     <block wx:if="{{isEditing}}">
-      <input class="info-input" bindinput="handleInput" data-field="email" value="{{userInfo.email}}" />
+      <input disabled class="info-input" bindinput="handleInput" data-field="email" value="{{userInfo.email}}" />
     </block>
     <block wx:else>
       <text class="info-value">{{userInfo.email}}</text>
@@ -64,8 +63,41 @@
       <text class="info-value">{{userInfo.phone}}</text>
     </block>
   </view>
+  <view class="info-item">
+    <image class="credit" src="/img/credit.png" mode=""/>
+    <text class="label">Credit</text>
+    <block>
+      <view class="info-value">
+        <image class="credit-level" src="/img/{{userInfo.breakTimer <=1 ?'normal':userInfo.breakTimer <=3? 'warning':'danger' }}.png" mode=""/>
+      </view>
+    </block>
+  </view>
+  <view bind:tap="showTips" class="tips">
+    <image src="/img/wenhao.png" mode=""/>
+  </view>
 </view>
-
+<view wx:if="{{showTip}}" class="overlay" bindtap="closePreview">
+  <view class="preview-container">
+    <view class="tip-content">
+      <view class="credit-title">Credit statement</view>
+      <view class="level-wrap">
+        <image src="/img/normal.png" mode=""/>
+        <text> 0-1 time</text>
+      </view>
+      <view class="level-wrap">
+        <image src="/img/warning.png" mode=""/>
+        <text> 2-3 times</text>
+      </view>
+      <view class="level-wrap">
+        <image src="/img/danger.png" mode=""/>
+        <text> 4 times</text>
+      </view>
+      <view class="note">
+        <text>Note: If the total number of cancellations and overdue instances exceeds 4, you will lose your booking privileges for this month.</text>
+      </view>
+    </view>
+  </view>
+</view>
 <!-- 操作按钮 -->
 <view class="btn-container" wx:if="{{userInfo!=null}}">
   <button class="logout-btn" bind:tap="logout">Log Out</button>

@@ -125,3 +125,19 @@
   padding: 15px;
   font-style: italic;
 }
+.buttons{
+  gap: 20px;
+  display: flex;
+}
+.reject{
+  margin-left: 20px;
+  width: 50%;
+  background-color: #9c9c9c;
+  color: white;
+}
+.accept{
+  margin-right: 20px;
+  width: 50%;
+  background-color: #684edf;
+  color: white;
+}

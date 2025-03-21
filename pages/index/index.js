@@ -147,6 +147,14 @@ Page({
       })
       return
     }
+    if (this.data.userInfo.breakTimer>=4) {
+      wx.showToast({
+        title: 'You have been banned this month due to misconduct!',
+        icon: 'none',
+        duration: 2000
+      })
+      return
+    }
     // 调用后端接口判断是否有权限
     wx.request({
       url: `http://${app.globalData.baseUrl}:8080/records/allowReserve?roomId=${roomId}&userId=${userId}`,
