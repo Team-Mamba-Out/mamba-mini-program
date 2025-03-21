@@ -1,19 +1,77 @@
+const app = getApp();
 Page({
   data: {
     userInfo: null,
     active: 'profile',
     avatarText: 'T',  // 头像首字母
     isEditing: false,
+    showTip:false
+  },
+  showTips(){
+    this.setData({
+      showTip:!this.data.showTip
+    })
+    console.log(this.data.showTip);
+  },
+  closePreview(){
+    this.setData({
+      showTip:!this.data.showTip
+    })
   },
   modify() {
     this.setData({
       isEditing: true
     })
   },
-  cancel() {
+
+  save(){
+    wx.showLoading({
+      title: 'Saving',
+    })
+    wx.request({
+      url: `http://${app.globalData.baseUrl}:8080/users/update`,
+      method:'Put',
+      
+      data:{
+        uid:this.data.userInfo.uid,
+        phone:this.data.userInfo.phone,
+        role:this.data.userInfo.role,
+        name:this.data.userInfo.name
+      },
+      success:(res)=>{
+        let token = wx.getStorageSync('token')
+        wx.request({
+          url: `http://${app.globalData.baseUrl}:8080/verify/getUserInfo`,
+          header:{
+            Authorization:token
+          },
+          method:'GET',
+          success:(res)=>{
+            let userInfo = res.data.data
+            this.setData({
+              userInfo
+            })
+            wx.setStorageSync('userInfo', userInfo)
+            wx.hideLoading()
+          }
+        })
+      }
+    })
+    this.setData({
+      isEditing:false
+    })
+  },
+  cancel(){
     this.setData({
       isEditing: false
     })
+  },
+   // 监听输入框变化
+   handleInput(e) {
+    const field = e.currentTarget.dataset.field; // 获取字段名
+    this.setData({
+      [`userInfo.${field}`]: e.detail.value // 动态更新 userInfo 数据
+    });
   },
   onChange(event) {
     const activeTab = event.detail;

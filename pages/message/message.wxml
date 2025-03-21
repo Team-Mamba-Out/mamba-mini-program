@@ -21,7 +21,23 @@
   <!-- 消息列表 -->
   <scroll-view class="inbox-list" scroll-y>
     <block wx:for="{{messages}}" wx:key="id">
-      <view class="message-container  {{item.deleting ? 'message-container-deleting' : ''}}">
+      <view wx:if="{{activeTab==='announcements' && item.receiver === userInfo.uid}}" class="message-container  {{item.deleting ? 'message-container-deleting' : ''}}">
+        <view class="message {{item.expanded ? 'message-expanded' : ''}} " style="transform: translateX({{item.offset}}px);" data-index="{{index}}" data-id="{{item.id}}" bind:tap="navigateToContent" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
+          <view class="isRead" wx:if="{{!item.read}}"></view>
+          <view class="icon">
+            <image src="/img/System.png" mode="" />
+          </view>
+          <view class="message-content">
+            <view class="title">{{item.title}}</view>
+            <view class="description">{{item.shortContent}}</view>
+            <view class="timestamp">{{item.createTime}}</view>
+          </view>
+        </view>
+        <view class="delete-btn" data-index="{{index}}" data-id="{{item.id}}" bindtap="deleteMessage">
+          <image class="delete-icon" src="/img/delete.png" mode="" />
+        </view>
+      </view>
+      <view wx:if="{{activeTab!='announcements' && item.senderId == userInfo.uid}}" class="message-container  {{item.deleting ? 'message-container-deleting' : ''}}">
         <view class="message {{item.expanded ? 'message-expanded' : ''}} " style="transform: translateX({{item.offset}}px);" data-index="{{index}}" data-id="{{item.id}}" bind:tap="navigateToContent" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
           <view class="isRead" wx:if="{{!item.read}}"></view>
           <view class="icon">
@@ -40,7 +56,10 @@
     </block>
   </scroll-view>
 </view>
-
+<view  style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <image wx:if="{{!messages}}" src="/img/Null Data.png" mode="" style="margin-bottom:10px;height: 30px; width: 30px;"/>
+  <text class="remind"> No more data here!</text>
+</view>
 <van-tabbar active="{{ active }}" active-color="#674ed4" inactive-color="#919191" bind:change="onChange">
   <van-tabbar-item name="index" icon="wap-home">Home</van-tabbar-item>
   <van-tabbar-item name="message" icon="comment">Message</van-tabbar-item>

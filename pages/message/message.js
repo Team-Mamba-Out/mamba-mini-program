@@ -23,10 +23,13 @@ Page({
     },
     startX: 0 // 记录滑动起点
   },
+
   updateUnreadCount() {
-    const unreadCount = this.data.messages.filter(msg => !msg.read).length;
+    const unreadAnnouncementCount = this.data.messages.filter(msg => !msg.read && msg.receiver===this.data.userInfo.uid).length;
+    const unreadMessageCount = this.data.messages.filter(msg => !msg.read && msg.senderId==this.data.userInfo.uid).length;
     this.setData({
-      'unread.announcements': unreadCount
+      'unread.announcements': unreadAnnouncementCount,
+      'unread.messages': unreadMessageCount,
     });
   },
   navigateToContent(e) {
@@ -67,13 +70,28 @@ Page({
         messages = messages.map(item => ({
           ...item, offset: 0, type: this.data.typeMap[item.title] || 0, shortContent: item.text.length > 100 ? item.text.substring(0, 100) + '...' : item.text, createTime: item.createTime.replace("T", " "),senderId:item.sender.split(";")[0],sender:item.sender.split(";")[1]
         }))
-        console.log(messages);
-        this.setData({
-          messages
+        wx.request({
+          url: `http://${app.globalData.baseUrl}:8080/messages/getSendMessage/${uid}`,
+          method:'GET',
+          success:(res)=>{
+            let messages1 = res.data.data.messages
+            messages1 = messages1.map(item => ({
+              ...item, offset: 0, type: this.data.typeMap[item.title] || 0, shortContent: item.text.length > 100 ? item.text.substring(0, 100) + '...' : item.text, createTime: item.createTime.replace("T", " "),senderId:item.sender.split(";")[0],sender:item.sender.split(";")[1]
+            }))
+            let newMessage=[...messages,...messages1]
+            console.log(newMessage);
+            newMessage = newMessage.reverse()
+            this.setData({
+              messages:newMessage
+            })
+            this.updateUnreadCount()
+          }
         })
-        this.updateUnreadCount()
       }
     })
+    
+    
+    
   },
   // 触摸移动
   touchMove(e) {

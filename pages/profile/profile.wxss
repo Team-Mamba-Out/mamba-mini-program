@@ -93,13 +93,31 @@
   position: relative;
   z-index: 3;
 }
-
+.tips{
+  
+  position: absolute;
+  right: 13px;
+  bottom: 2px;
+}
+.tips image{
+  width: 13px;
+  height: 13px;
+}
 .info-item {
   display: flex;
   align-items: center;
   padding: 36rpx 40rpx;
   position: relative;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.credit{
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+}
+.credit-level{
+  width: 25px;
+  height: 25px;
 }
 .info-value, .info-input {
   flex: 2;
@@ -217,4 +235,55 @@
 wx-button:after {
   border: 0px !important;
   color: #4A4458;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(63, 62, 62, 0.5); /* 半透明背景 */
+  z-index: 4;
+}
+.tip-content{
+  border-radius: 10px;
+  background-color: white;
+  width: 280px;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.note{
+  margin-top: 10px;
+  margin-left: 16px;
+  font-size: 10px;
+}
+.credit-title{
+  margin-top: 15px;
+  margin-bottom: 20px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.level-wrap{
+  line-height: 33px;
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.level-wrap image{
+  width: 30px;
+  height: 30px;
+}
+.preview-container {
+  height: 40vh;
+  width: 80%; /* 或其他尺寸 */
+  
+  display: flex;
+  justify-content: center;
+  
 }

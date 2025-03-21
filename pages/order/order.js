@@ -14,7 +14,7 @@ Page({
     active: 'order',
     rooms:["Teaching Room","Activity Room","Meeting Room"],
     records: [],
-    showRecords:[],
+    showRecords:null,
     isloading:false,
     pageNum:1,
     total:0
@@ -136,25 +136,6 @@ Page({
       }
     });
   },
-  checkIn(e){
-    let id = e.currentTarget.dataset.item.id
-    wx.request({
-      url: `http://${app.globalData.baseUrl}:8080/records/checkin`,
-      method:'PUT',
-      data: {id}, // ✅ 发送表单数据
-      header: { 
-              'content-type': 'application/x-www-form-urlencoded' // ✅ 确保后端能解析
-      },
-      success:(res)=>{
-        this.setData({
-          pageNum:1,
-          total:0,
-          records:[]
-        }),
-        this.getRecord()
-      }
-    })
-  },
   onPullDownRefresh() {
     this.setData({
       pageNum:1,
@@ -177,9 +158,13 @@ this.setData({
 this.getRecord()
   },
   getRecord(){
-    this.setData({
-      isloading:true
-    })
+    if (this.data.pageNum === 1) {
+      this.setData({
+        records: [],
+        showRecords: [],
+        isloading:true
+      });
+    }
     wx.showLoading({
       title: 'loading...',
     })
@@ -230,6 +215,7 @@ this.getRecord()
     recordTime
    };
   });
+      
       // 更新数据
       this.setData({ records: [...this.data.records,...formattedRecords],showRecords: [...this.data.records,...formattedRecords],isloading:false,total });
       },
@@ -247,12 +233,12 @@ this.getRecord()
     let userInfo = wx.getStorageSync('userInfo')
     this.setData({
       userInfo,
-      active: 'order',
+      active: 'order'
     });
     if (!userInfo) {
       return
     }
-    this.getRecord()
+    
  },
 
   /**
@@ -268,7 +254,8 @@ this.getRecord()
   onShow() {
     const userInfo = wx.getStorageSync('userInfo');
     this.setData({
-      userInfo
+      userInfo,
+      pageNum:1
     })
     if (!userInfo) {
       wx.showModal({
