@@ -11,13 +11,13 @@
 <view class="info-list">
   <view class="buttons">
     <view class="modify" bind:tap="modify" wx:if="{{!isEditing}}">
-      <image src="/img/modify.png" mode=""/>
+      <van-icon name="edit" size="43rpx" color="#674ed4" />
     </view>
     <view wx:if="{{isEditing}}" class="cancel" bind:tap="cancel">
-      cancel
+      Cancel <van-icon name="cross" size="30rpx" style="margin-left: 6rpx;"/>
     </view>
     <view wx:if="{{isEditing}}" class="save" bind:tap="save">
-      save
+      Save <van-icon name="success" size="30rpx" style="margin-left: 6rpx;"/>
     </view>
   </view>
   <view class="info-item">
@@ -64,16 +64,16 @@
     </block>
   </view>
   <view class="info-item">
-    <image class="credit" src="/img/credit.png" mode=""/>
+    <van-icon name="diamond" color="#674ed4" size="20px" />
     <text class="label">Credit</text>
     <block>
       <view class="info-value">
-        <image class="credit-level" src="/img/{{userInfo.breakTimer <=1 ?'normal':userInfo.breakTimer <=3? 'warning':'danger' }}.png" mode=""/>
+        <image class="credit-level" src="/img/{{userInfo.breakTimer <=1 ?'normal':userInfo.breakTimer <=3? 'warning':'danger' }}.png" mode="" />
       </view>
     </block>
   </view>
   <view bind:tap="showTips" class="tips">
-    <image src="/img/wenhao.png" mode=""/>
+    <image src="/img/wenhao.png" mode="" />
   </view>
 </view>
 <view wx:if="{{showTip}}" class="overlay" bindtap="closePreview">
@@ -81,15 +81,15 @@
     <view class="tip-content">
       <view class="credit-title">Credit statement</view>
       <view class="level-wrap">
-        <image src="/img/normal.png" mode=""/>
+        <image src="/img/normal.png" mode="" />
         <text> 0-1 time</text>
       </view>
       <view class="level-wrap">
-        <image src="/img/warning.png" mode=""/>
+        <image src="/img/warning.png" mode="" />
         <text> 2-3 times</text>
       </view>
       <view class="level-wrap">
-        <image src="/img/danger.png" mode=""/>
+        <image src="/img/danger.png" mode="" />
         <text> 4 times</text>
       </view>
       <view class="note">

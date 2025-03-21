@@ -2,30 +2,33 @@
 <view class="container1">
   <view class="tab-container">
     <view class="tab-item" bindtap="switchTab" data-tab="announcements">
-      <image wx:if="{{activeTab != 'announcements'}}" src="/img/notification.png" mode=""/>
-      <image wx:if="{{activeTab === 'announcements'}}" src="/img/notification-active.png" mode=""/>
-      <text class="{{ activeTab === 'announcements' ? 'active' : '' }}">Announcements</text>
-      <text class="badge1 {{activeTab === 'announcements' ? 'active-badge':''}}" wx:if="{{ unread.announcements > 0 }}">{{ unread.announcements }}</text>
+      <van-icon name="notes" wx:if="{{activeTab != 'announcements'&& unread.announcements === 0}}" color="#797979" style="margin-right: 10px;" size="20px" />
+      <van-icon name="notes" wx:if="{{ activeTab != 'announcements' && unread.announcements > 0 }}" info="{{ unread.announcements }}" style="margin-right: 10px;" size="20px" />
+      <van-icon name="notes" wx:if="{{activeTab === 'announcements' && unread.announcements === 0}}" color="#674ed4" style="margin-right: 10px;" size="20px" />
+      <van-icon name="notes" wx:if="{{ activeTab === 'announcements' && unread.announcements > 0 }}" info="{{ unread.announcements }}" style="margin-right: 10px;" size="20px" color="#674ed4" />
+      <text class="{{ activeTab === 'announcements' ? 'active' : ''  }}" style="font-size: 15px;">Announcements</text>
     </view>
 
     <view class="tab-item" bindtap="switchTab" data-tab="messages">
-      <image wx:if="{{activeTab != 'messages'}}" src="/img/message.png" mode=""/>
-      <image wx:if="{{activeTab === 'messages'}}" src="/img/message-active.png" mode=""/>
-      <text class="{{ activeTab === 'messages' ? 'active' : '' }}">Messages</text>
-      <text class="badge2 {{activeTab === 'messages' ? 'active-badge':''}}" wx:if="{{ unread.messages > 0 }}">{{ unread.messages }}</text>
+      <van-icon name="chat" wx:if="{{activeTab != 'messages' && unread.messages === 0}}" color="#797979" style="margin-right: 10px;" size="20px" />
+      <van-icon name="chat" wx:if="{{ activeTab != 'messages' && unread.messages > 0 }}" info="{{ unread.messages }}" style="margin-right: 10px;" size="20px" />
+      <van-icon name="chat" wx:if="{{activeTab === 'messages' && unread.messages === 0}}" color="#674ed4" style="margin-right: 10px;" size="20px" />
+      <van-icon name="chat" wx:if="{{ activeTab === 'messages' && unread.messages > 0 }}" info="{{ unread.messages }}" style="margin-right: 10px;" size="20px" color="#674ed4" />
+      <text class="{{ activeTab === 'messages' ? 'active' : '' }}" style="font-size: 15px;">Messages</text>
     </view>
     <view class="tab-underline" style="left: {{ activeTab === 'announcements' ? '0%' : '50%' }};"></view>
   </view>
 
-  
+
   <!-- 消息列表 -->
   <scroll-view class="inbox-list" scroll-y>
     <block wx:for="{{messages}}" wx:key="id">
       <view wx:if="{{activeTab==='announcements' && item.receiver === userInfo.uid}}" class="message-container  {{item.deleting ? 'message-container-deleting' : ''}}">
         <view class="message {{item.expanded ? 'message-expanded' : ''}} " style="transform: translateX({{item.offset}}px);" data-index="{{index}}" data-id="{{item.id}}" bind:tap="navigateToContent" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
           <view class="isRead" wx:if="{{!item.read}}"></view>
+          <view class="Read" wx:if="{{item.read}}"></view>
           <view class="icon">
-            <image src="/img/System.png" mode="" />
+            <van-icon wx:if="{{item.type===0}}" name="bell" color="white" size="21px" />
           </view>
           <view class="message-content">
             <view class="title">{{item.title}}</view>
@@ -40,8 +43,11 @@
       <view wx:if="{{activeTab!='announcements' && item.senderId == userInfo.uid}}" class="message-container  {{item.deleting ? 'message-container-deleting' : ''}}">
         <view class="message {{item.expanded ? 'message-expanded' : ''}} " style="transform: translateX({{item.offset}}px);" data-index="{{index}}" data-id="{{item.id}}" bind:tap="navigateToContent" bindtouchstart="touchStart" bindtouchmove="touchMove" bindtouchend="touchEnd">
           <view class="isRead" wx:if="{{!item.read}}"></view>
+          <view class="Read" wx:if="{{item.read}}"></view>
           <view class="icon">
-            <image src="/img/System.png" mode="" />
+            <van-icon wx:if="{{item.type===0}}" name="comment" color="white" size="21px" />
+            <van-icon wx:if="{{item.type===1}}" name="setting" color="white" size="21px" />
+            <van-icon wx:if="{{item.type===2}}" name="todo-list" color="white" size="21px" />
           </view>
           <view class="message-content">
             <view class="title">{{item.title}}</view>
@@ -56,8 +62,8 @@
     </block>
   </scroll-view>
 </view>
-<view  style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-  <image wx:if="{{!messages}}" src="/img/Null Data.png" mode="" style="margin-bottom:10px;height: 30px; width: 30px;"/>
+<view style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <image wx:if="{{!messages}}" src="/img/Null Data.png" mode="" style="margin-bottom:10px;height: 30px; width: 30px;" />
   <text class="remind"> No more data here!</text>
 </view>
 <van-tabbar active="{{ active }}" active-color="#674ed4" inactive-color="#919191" bind:change="onChange">

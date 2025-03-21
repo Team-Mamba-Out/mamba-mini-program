@@ -130,6 +130,21 @@ Page({
                 selectedOrderType:'All'
               })
               this.getRecord()
+              let token = wx.getStorageSync('token')
+              wx.request({
+                url: `http://${app.globalData.baseUrl}:8080/verify/getUserInfo`,
+                header: {
+                  Authorization: token
+                },
+                method: 'GET',
+                success: (res) => {
+                  let userInfo = res.data.data
+                  this.setData({
+                    userInfo
+                  })
+                  wx.setStorageSync('userInfo', userInfo)
+                }
+              })
             }
           })
         }

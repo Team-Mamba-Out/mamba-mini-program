@@ -1,8 +1,4 @@
 <view class="container1">
-  <!-- 顶部导航 -->
- 
-
-  <!-- 发件人信息 -->
   <view class="sender-info">
     <view class="avatar">{{message.icon}}</view>
     <view class="sender-details">
@@ -11,7 +7,7 @@
     </view>
     <view class="email-meta">
       <text class="timestamp">{{message.timestamp}}</text>
-      <view class="security-icon">🛡</view>
+      <view class="security-icon">📌</view>
     </view>
   </view>
 
