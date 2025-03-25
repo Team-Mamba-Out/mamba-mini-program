@@ -9,11 +9,7 @@ Page({
   data: {
     activeTab: 'announcements',
     active: "message",
-    typeMap: {
-      "Room Reservation Cancellation": 1,
-      "Reserve Room successfully": 2,
-      "Room Reservation Approved": 3
-    },
+    
     userInfo: null,
     color: [],
     messages: [],

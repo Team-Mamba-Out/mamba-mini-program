@@ -127,44 +127,42 @@ Page({
       endMinDate: minDate + 1800000,
       totalMessage: app.globalData.unread
     });
-
     this.loadRooms(); // 初始加载所有数据
-
-    wx.request({
-      url: `http://${app.globalData.baseUrl}:8080/messages/countUnreadMessages`,
-      method: 'GET',
-      data: {
-        receiver: userInfo.uid
-      },
-      success: (res) => {
-        if (res.statusCode === 200) {
-          const unreadCount = res.data.data;
-          this.setData({
-            totalMessage: unreadCount
-          });
-          app.globalData.unread = unreadCount;
-          console.log(app.globalData.unread);
-        } else {
+    if (userInfo == null || userInfo.uid==null) {
+      return
+    } else {
+      wx.request({
+        url: `http://${app.globalData.baseUrl}:8080/messages/countUnreadMessages`,
+        method: 'GET',
+        data: {
+          receiver: userInfo.uid
+        },
+        success: (res) => {
+          if (res.statusCode === 200) {
+            const unreadCount = res.data.data;
+            this.setData({
+              totalMessage: unreadCount
+            });
+            app.globalData.unread = unreadCount;
+            console.log(app.globalData.unread);
+          } else {
+            wx.showToast({
+              title: 'Failed to load unread messages',
+              icon: 'none'
+            });
+          }
+        },
+        fail: (err) => {
           wx.showToast({
-            title: 'Failed to load unread messages',
+            title: 'Network error',
             icon: 'none'
           });
         }
-      },
-      fail: (err) => {
-        wx.showToast({
-          title: 'Network error',
-          icon: 'none'
-        });
-      }
-    });
+      });
+    }
   },
 
   goToDetails: function (e) {
-    const roomId = e.currentTarget.dataset.id;
-    const rooms = this.data.rooms;
-    const roomsString = JSON.stringify(rooms);
-    const userId = this.data.userInfo.uid;
     if (!this.data.userInfo) {
       wx.showModal({
         title: 'Warning',
@@ -181,6 +179,11 @@ Page({
       })
       return
     }
+    const roomId = e.currentTarget.dataset.id;
+    const rooms = this.data.rooms;
+    const roomsString = JSON.stringify(rooms);
+    const userId = this.data.userInfo.uid;
+    
     if (this.data.userInfo.breakTimer >= 4) {
       wx.showToast({
         title: 'You have been banned this month due to misconduct!',
