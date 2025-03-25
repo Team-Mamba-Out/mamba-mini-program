@@ -112,7 +112,9 @@ Page({
   cancel(e){
     wx.showModal({
       title: 'Cancel Confirm',
-      content: `Cancelling three times will be marked`,
+      content: `Cancelling three times will be marked`,      
+      cancelText: 'Cancel',
+      confirmText: 'Confirm',
       success: (res) => {
         if (res.confirm) {
           let id = e.currentTarget.dataset.item.id
@@ -279,6 +281,8 @@ this.getRecord()
       wx.showModal({
         title: 'Warning',
         content: 'Please log in before using.',
+        cancelText: 'Cancel',
+        confirmText: 'Confirm',
         complete: (res) => {
           if (res.confirm) {
             wx.navigateTo({

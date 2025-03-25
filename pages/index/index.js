@@ -131,14 +131,14 @@ Page({
     this.loadRooms(); // 初始加载所有数据
 
     wx.request({
-      url: `http://${app.globalData.baseUrl}:8080/messages/countUnreadMessages`, 
+      url: `http://${app.globalData.baseUrl}:8080/messages/countUnreadMessages`,
       method: 'GET',
       data: {
         receiver: userInfo.uid
       },
       success: (res) => {
         if (res.statusCode === 200) {
-          const unreadCount = res.data.data; 
+          const unreadCount = res.data.data;
           this.setData({
             totalMessage: unreadCount
           });
@@ -169,6 +169,8 @@ Page({
       wx.showModal({
         title: 'Warning',
         content: 'Please log in before using.',
+        cancelText: 'Cancel',
+        confirmText: 'Confirm',
         complete: (res) => {
           if (res.confirm) {
             wx.navigateTo({
@@ -361,6 +363,8 @@ Page({
       wx.showModal({
         title: 'Warning',
         content: 'Please log in first',
+        cancelText: 'Cancel',
+        confirmText: 'Confirm',
         complete: (res) => {
           if (res.confirm) {
             wx.navigateTo({
