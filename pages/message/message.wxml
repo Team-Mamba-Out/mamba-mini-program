@@ -52,7 +52,7 @@
           <view class="message-content">
             <view class="title">{{item.title}}</view>
             <view class="description">{{item.shortContent}}</view>
-            <view class="timestamp">{{item.createTime}}</view>
+            <view class="timestamp1">{{item.createTime}}</view>
           </view>
         </view>
         <view class="delete-btn" data-index="{{index}}" data-id="{{item.id}}" bindtap="deleteMessage">

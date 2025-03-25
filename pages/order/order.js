@@ -6,13 +6,13 @@ Page({
    * 页面的初始数据
    */
   data: {
-    userInfo:null,
+    userInfo: null,
     selectedOrderType: "All",
-    selectedTimeType:"Default",
-    TimeTypes:["Default","Booking Time","Order Time"],
-    orderTypes: ["All", "Pending", "Ongoing", "Done","Cancelled","Overdue"],
+    selectedTimeType: "Default",
+    TimeTypes: ["Default", "Booking Time", "Order Time"],
+    orderTypes: ["All", "Pending", "Ongoing", "Done", "Cancelled", "Overdue"],
     active: 'order',
-    rooms:["Teaching Room","Activity Room","Meeting Room"],
+    rooms: ["Teaching Room", "Activity Room", "Meeting Room"],
     records: [],
     showRecords:null,
     isloading:false,
@@ -20,22 +20,22 @@ Page({
     total:0,
     totalMessage: null
   },
-  checkIn(e){
+  checkIn(e) {
     let id = e.currentTarget.dataset.item.id
     wx.request({
       url: `http://${app.globalData.baseUrl}:8080/records/checkin`,
-      method:'PUT',
-      data: {id}, // ✅ 发送表单数据
-      header: { 
-              'content-type': 'application/x-www-form-urlencoded' // ✅ 确保后端能解析
+      method: 'PUT',
+      data: { id }, // ✅ 发送表单数据
+      header: {
+        'content-type': 'application/x-www-form-urlencoded' // ✅ 确保后端能解析
       },
-      success:(res)=>{
+      success: (res) => {
         this.setData({
-          pageNum:1,
-          total:0,
-          records:[]
+          pageNum: 1,
+          total: 0,
+          records: []
         }),
-        this.getRecord()
+          this.getRecord()
       }
     })
   },
@@ -59,23 +59,23 @@ Page({
   // 执行排序
   sortRecords(type) {
     let showRecords = this.data.records
-    if (type === 2) { 
+    if (type === 2) {
       // 按 `recordTime` 排序（下单时间）
       showRecords.sort((a, b) => new Date(a.recordTime) - new Date(b.recordTime));
-    } else if (type === 1) { 
+    } else if (type === 1) {
       // 按 `startTime` 排序（预约时间）
       showRecords.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-    } else { 
+    } else {
       // 按 `id` 排序（默认）
       showRecords.sort((a, b) => a.id - b.id);
     }
     this.setData({ showRecords });
   },
   filterRecords(status) {
-    const filtered = this.data.records.filter(record => 
+    const filtered = this.data.records.filter(record =>
       status === 0 ? true : record.status === status // 0 代表 "全部订单"
     );
-    
+
     this.setData({ showRecords: filtered });
     console.log("筛选后的数据:", filtered);
   },
@@ -85,10 +85,10 @@ Page({
       success: (res) => {
         if (this.data.orderTypes[res.tapIndex] == 'All') {
           this.setData({
-            showRecords:this.data.records
+            showRecords: this.data.records
           })
-        }else{
-        this.filterRecords(this.data.orderTypes[res.tapIndex])
+        } else {
+          this.filterRecords(this.data.orderTypes[res.tapIndex])
         }
         this.setData({
           selectedOrderType: this.data.orderTypes[res.tapIndex]
@@ -109,7 +109,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  cancel(e){
+  cancel(e) {
     wx.showModal({
       title: 'Cancel Confirm',
       content: `Cancelling three times will be marked`,      
@@ -121,16 +121,16 @@ Page({
           console.log(id);
           wx.request({
             url: `http://${app.globalData.baseUrl}:8080/records/cancel`,
-            method:'PUT',
-            data: {id}, 
-            header: { 
-                'content-type': 'application/x-www-form-urlencoded' 
-          },
-            success:(res)=>{
+            method: 'PUT',
+            data: { id,reason:'test' },
+            header: {
+              'content-type': 'application/x-www-form-urlencoded'
+            },
+            success: (res) => {
               this.setData({
-                pageNum:1,
-                records:[],
-                selectedOrderType:'All'
+                pageNum: 1,
+                records: [],
+                selectedOrderType: 'All'
               })
               this.getRecord()
               let token = wx.getStorageSync('token')
@@ -156,31 +156,31 @@ Page({
   },
   onPullDownRefresh() {
     this.setData({
-      pageNum:1,
-      total:0,
-      records:[]
+      pageNum: 1,
+      total: 0,
+      records: []
     }),
-    this.getRecord()
+      this.getRecord()
     wx.stopPullDownRefresh()
   },
   onReachBottom() {
     if (this.data.pageNum * 5 >= this.data.total) {
-      return 
+      return
     }
     if (this.data.isloading) {
       return
     }
-this.setData({
-  pageNum:this.data.pageNum + 1
-})
-this.getRecord()
+    this.setData({
+      pageNum: this.data.pageNum + 1
+    })
+    this.getRecord()
   },
-  getRecord(){
+  getRecord() {
     if (this.data.pageNum === 1) {
       this.setData({
         records: [],
         showRecords: [],
-        isloading:true
+        isloading: true
       });
     }
     wx.showLoading({
@@ -188,63 +188,63 @@ this.getRecord()
     })
     wx.request({
       url: `http://${app.globalData.baseUrl}:8080/records/getRecords`,
-      data:{
-      page:this.data.pageNum,
-      size:5,
-      userId: this.data.userInfo.uid
+      data: {
+        page: this.data.pageNum,
+        size: 5,
+        userId: this.data.userInfo.uid
       },
-      method:'GET',
-      success:(res)=>{
+      method: 'GET',
+      success: (res) => {
         let records = res.data.data.records
         console.log(records);
         let total = res.data.data.total
         const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0); // 归零时间，确保只计算天数
-    const monthMap = {
-      "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr",
-      "05": "May", "06": "Jun", "07": "Jul", "08": "Aug",
-      "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"
-    };
-    // 遍历 records，拆分日期并转换月份
-    const formattedRecords = records.map(record => {
-    let recordTime =record.recordTime.replace("T"," ")
-    const [date, time] = record.startTime.split("T"); // 拆分 `startTime` 的日期和时间
-    const [year, month, day] = date.split("-"); // 拆分年月日
-    const startTime = new Date(record.startTime.split("T")[0]); // 取 `2025-03-06`
+        currentDate.setHours(0, 0, 0, 0); // 归零时间，确保只计算天数
+        const monthMap = {
+          "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr",
+          "05": "May", "06": "Jun", "07": "Jul", "08": "Aug",
+          "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec"
+        };
+        // 遍历 records，拆分日期并转换月份
+        const formattedRecords = records.map(record => {
+          let recordTime = record.recordTime.replace("T", " ")
+          const [date, time] = record.startTime.split("T"); // 拆分 `startTime` 的日期和时间
+          const [year, month, day] = date.split("-"); // 拆分年月日
+          const startTime = new Date(record.startTime.split("T")[0]); // 取 `2025-03-06`
           startTime.setHours(0, 0, 0, 0); // 确保时间归零
-     // 计算相差的天数
-    let diffTime = startTime.getTime() - currentDate.getTime();
-    if (diffTime < 0) {
-      diffTime = 0
-    }
-    const dueInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 计算天数
-     // 处理 `endTime`
-    const [endDate, endTime] = record.endTime.split("T"); // 拆分 `endTime` 的日期和时间
-  return {
-    ...record,
-    month: monthMap[month] || "", // 转换成英文简写
-    day: day, // 直接赋值
-    // 新增的部分 ↓↓↓
-    startDate: date, // `YYYY-MM-DD`
-    startTimeNoS: time.substring(0, 5), // `HH:mm`（去掉秒）
-    endDate: endDate, // `YYYY-MM-DD`
-    endTimeNoS: endTime.substring(0, 5), // `HH:mm`（去掉秒）
-    dueIn: dueInDays,
-    recordTime
-   };
-  });
-      
-      // 更新数据
-      this.setData({ records: [...this.data.records,...formattedRecords],showRecords: [...this.data.records,...formattedRecords],isloading:false,total });
+          // 计算相差的天数
+          let diffTime = startTime.getTime() - currentDate.getTime();
+          if (diffTime < 0) {
+            diffTime = 0
+          }
+          const dueInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // 计算天数
+          // 处理 `endTime`
+          const [endDate, endTime] = record.endTime.split("T"); // 拆分 `endTime` 的日期和时间
+          return {
+            ...record,
+            month: monthMap[month] || "", // 转换成英文简写
+            day: day, // 直接赋值
+            // 新增的部分 ↓↓↓
+            startDate: date, // `YYYY-MM-DD`
+            startTimeNoS: time.substring(0, 5), // `HH:mm`（去掉秒）
+            endDate: endDate, // `YYYY-MM-DD`
+            endTimeNoS: endTime.substring(0, 5), // `HH:mm`（去掉秒）
+            dueIn: dueInDays,
+            recordTime
+          };
+        });
+
+        // 更新数据
+        this.setData({ records: [...this.data.records, ...formattedRecords], showRecords: [...this.data.records, ...formattedRecords], isloading: false, total });
       },
-      fail(res){
+      fail(res) {
         console.log(res);
       },
-      complete:()=>{
+      complete: () => {
         wx.hideLoading()
       }
     })
-    
+
   },
 
   onLoad(options) {
@@ -257,8 +257,8 @@ this.getRecord()
     if (!userInfo) {
       return
     }
-    
- },
+
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -310,9 +310,9 @@ this.getRecord()
 
   },
 
- 
 
-  
+
+
 
   /**
    * 用户点击右上角分享

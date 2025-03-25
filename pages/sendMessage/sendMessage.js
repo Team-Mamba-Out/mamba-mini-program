@@ -10,7 +10,7 @@ Page({
     showPickerModal: false,
     content: '',
     loading: false,
-    typeLabels: ['More Date Booking', 'Classroom Repair', 'Other Feedback']
+    typeLabels: ['Later Date Booking', 'Issue with Room', 'Other Feedback']
   },
 
   onLoad(options) {

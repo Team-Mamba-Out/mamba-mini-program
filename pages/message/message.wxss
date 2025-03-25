@@ -101,7 +101,7 @@
   margin-bottom: 10px;
   border-radius: 10px;
   transition: transform 0.2s ease,border-radius 0.3s ease ;
-  width: 85%;
+  width: 87%;
   height: 100%;
   position: relative;
   z-index: 1;
@@ -189,7 +189,11 @@
   color: #aaa;
   margin-top: 6px;
 }
-
+.timestamp1 {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 18px;
+}
 
 /* 悬浮按钮 */
 .floating-button {
