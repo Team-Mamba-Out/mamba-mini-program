@@ -8,12 +8,12 @@
 
 /* 头部样式 */
 .header {
-  background: linear-gradient(135deg, #674ed4 0%, #553C9A 100%);
+  background: linear-gradient(135deg, #684edf 0%, #7d65e9 100%);
   padding: 80rpx 40rpx 60rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 8rpx 40rpx rgba(103,78,212,0.2);
+  box-shadow: 0 15rpx 40rpx rgba(161, 144, 235, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -38,7 +38,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(45deg, #8f7aea, #6c5ad5);
+  background: linear-gradient(45deg, #6b4fe4, #7232e9);
   position: relative;
   transition: transform 0.3s ease;
 }
@@ -212,7 +212,7 @@
 
 .logout-btn {
   background: rgba(255,255,255,0.95);
-  border: 2rpx solid #5840a2;
+  border: 2rpx solid #5021db;
   border-radius: 60rpx;
   height: 80rpx;
   width: 300rpx;

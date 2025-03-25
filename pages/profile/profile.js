@@ -5,7 +5,8 @@ Page({
     active: 'profile',
     avatarText: 'T',  // 头像首字母
     isEditing: false,
-    showTip:false
+    showTip:false,
+    totalMessage: null,
   },
   showTips(){
     this.setData({
@@ -120,7 +121,8 @@ Page({
     const avatarText = this.getAvatarText(userInfo.name);
     this.setData({
       userInfo,
-      avatarText
+      avatarText,
+      totalMessage: app.globalData.unread
     })
 
   },
@@ -135,6 +137,7 @@ Page({
       userInfo,
       avatarText: avatarText,
       active: 'profile',
+      totalMessage: app.globalData.unread
     });
   },
 

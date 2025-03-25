@@ -164,7 +164,7 @@ Page({
         startTime: startTime,
         endTime: endTime,
         status: 'busy',
-        title: 'Repair'
+        title: 'Repairing'
       });
     });
 
@@ -245,7 +245,7 @@ Page({
 
   formatDescription() {
     let description = this.data.room.description;
-    description = description.replace('Key Points:', '<div style="margin: 5px; font-weight: bold;">Key Points:</div>');
+    description = description.replace('Key Points:', '<div style="margin: 5px; font-weight: bold; margin-left: 0px;">Key Points:</div>');
 
     description = `<div style="margin: 5px; margin-bottom: -5px;">${description}</div>`;
 
@@ -264,11 +264,16 @@ Page({
       const date = new Date(today);
       date.setDate(today.getDate() + i);
 
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; 
+      const day = date.getDate();
+      const fullDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
       dateList.push({
-        fullDate: date.toISOString().split('T')[0],
+        fullDate: fullDate,
         weekdayShort: weekDays[date.getDay()],
-        day: date.getDate(),
-        month: date.getMonth() + 1
+        day: day,
+        month: month
       });
     }
 
@@ -333,6 +338,7 @@ Page({
   switchDate(e) {
     const date = e.currentTarget.dataset.date;
     this.setData({ activeDate: date }, () => this.updateSchedule());
+    console.log(this.data.activeDate);
   },
 
   // 预约处理

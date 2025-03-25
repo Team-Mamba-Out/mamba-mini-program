@@ -27,7 +27,8 @@ Page({
     rooms: [],
     teachingRooms: [],
     activitiesRooms: [],
-    meetingRooms: []
+    meetingRooms: [],
+    totalMessage: null,
   },
 
   loadRooms() {
@@ -46,8 +47,8 @@ Page({
         const date = new Date(timestamp);
         // 转换为本地时间（避免时区问题）
         const localTime = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
-        const isoString = localTime.toISOString().split('.')[0]; 
-        return isoString.slice(0, 16); 
+        const isoString = localTime.toISOString().split('.')[0];
+        return isoString.slice(0, 16);
       };
 
       params.start = formatTime(this.data.startDateTime);
@@ -81,8 +82,8 @@ Page({
             rooms: rooms,
           });
 
+          app.globalData.rooms = this.data.rooms;
           this.classifyRooms(rooms);
-
           console.log(res.data.data.rooms);
         }
       },
@@ -101,7 +102,8 @@ Page({
   onShow() {
     let userInfo = wx.getStorageSync('userInfo')
     this.setData({
-      userInfo
+      userInfo,
+      totalMessage: app.globalData.unread
     })
   },
   onLoad(options) {
@@ -122,10 +124,40 @@ Page({
       active: 'index',
       minDate: minDate,
       maxDate: new Date().setDate(currentDate.getDate() + 7),
-      endMinDate: minDate + 1800000
+      endMinDate: minDate + 1800000,
+      totalMessage: app.globalData.unread
     });
 
     this.loadRooms(); // 初始加载所有数据
+
+    wx.request({
+      url: `http://${app.globalData.baseUrl}:8080/messages/countUnreadMessages`, 
+      method: 'GET',
+      data: {
+        receiver: userInfo.uid
+      },
+      success: (res) => {
+        if (res.statusCode === 200) {
+          const unreadCount = res.data.data; 
+          this.setData({
+            totalMessage: unreadCount
+          });
+          app.globalData.unread = unreadCount;
+          console.log(app.globalData.unread);
+        } else {
+          wx.showToast({
+            title: 'Failed to load unread messages',
+            icon: 'none'
+          });
+        }
+      },
+      fail: (err) => {
+        wx.showToast({
+          title: 'Network error',
+          icon: 'none'
+        });
+      }
+    });
   },
 
   goToDetails: function (e) {
@@ -147,7 +179,7 @@ Page({
       })
       return
     }
-    if (this.data.userInfo.breakTimer>=4) {
+    if (this.data.userInfo.breakTimer >= 4) {
       wx.showToast({
         title: 'You have been banned this month due to misconduct!',
         icon: 'none',
@@ -340,7 +372,7 @@ Page({
       return;
     }
 
-    const roomsData = JSON.stringify(this.data.rooms); 
+    const roomsData = JSON.stringify(this.data.rooms);
     const activeRoomID = '';
     wx.navigateTo({
       url: `/pages/sendMessage/sendMessage?rooms=${encodeURIComponent(roomsData)}&activeRoomID=${activeRoomID}`

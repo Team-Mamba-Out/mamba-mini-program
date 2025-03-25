@@ -1,143 +1,230 @@
-/* 容器 */
+/* 增强版样式 */
 .container {
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  padding: 10px;
+  background: #f8fafc;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* 顶部导航栏 */
-.navbar {
+.email-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+/* 邮件头样式 */
+.email-header {
+  padding: 48rpx 35rpx 35rpx 35rpx;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 15px 15px 0 0;
+}
+
+.notification-badge {
+  display: block;
+  color: rgba(255,255,255,0.9);
+  font-size: 25rpx;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.email-title {
+  color: white;
+  font-size: 42rpx;
+  font-weight:500;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.meta-info {
+  display: flex;
+  gap: 15px;
+}
+
+.meta-item {
+  color: rgba(255,255,255,0.85);
+  font-size: 28rpx;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 15px;
-  border-bottom: 1px solid #ddd;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
-.back-icon {
-  font-size: 18px;
-  cursor: pointer;
+/* 内容区块 */
+.content-section {
+  padding: 20px;
 }
 
-.title {
+.info-card {
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.info-card.warning {
+  background: #fff7ed;
+  border-color: #ffedd5;
+}
+
+.info-card.update {
+  background: #f0f6fd;
+  border-color: #f0f6fd;
+}
+
+.info-card.reason {
+  background: #f5f3ff;
+  border-color: #ede9fe;
+}
+
+.card-title {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 15px;
+  display: block;
 }
 
-.navbar-icons {
+.info-row {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .icon {
   font-size: 18px;
-  cursor: pointer;
+  min-width: 20px;
+  text-align: center;
 }
+
+.info-text {
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 8rpx;
+}
+
+.info-text-reassign{
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 15rpx;
+  margin-top: -15rpx;
+  margin-bottom: 15px;
+}
+
+.info-text-title{
+  color: #4d4769;
+  font-size: 15px;
+  line-height: 1;
+  margin-top: 8rpx;
+  font-weight: 500;
+}
+
+.info-text-user{
+  color: #7b7694;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 10rpx;
+  margin-bottom: 20rpx;
+  text-decoration: underline #57585a 1px;
+  font-style: italic;
+}
+
+.reason-content {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  color: #64748b;
+  /* font-style: italic; */
+  font-size: 28rpx;
+}
+
+/* Optimized button styles */
+wx-button:after {
+  border: none !important;
+}
+
+/* Optimized button styles */
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  width: 45%;
+  border-radius: 30px;
+  font-size: 30rpx;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  padding: 8rpx 30rpx;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.reject {
+  background: linear-gradient(135deg, #fce3e3, #f8d5d4);
+  color: #724747;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  /* text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3); */
+}
+
+.accept {
+  background: linear-gradient(135deg, #d7d2f1, #dcd6f8);
+  color: rgb(19, 3, 78);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  /* text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3); */
+}
+
+button.disabled {
+  opacity: 0.7;
+  filter: grayscale(0.8);
+  cursor: not-allowed;
+}
+
+button:active:not(.disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
 
 /* 发件人信息 */
 .sender-info {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid #eee;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #55aaff;
-  color: white;
+  padding: 24px;
+  border-top: 1px solid #e5e7eb;
   text-align: center;
-  line-height: 40px;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.sender-details {
-  flex-grow: 1;
 }
 
 .sender-name {
-  font-weight: bold;
+  display: block;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 8px 0;
 }
 
-.recipient {
+.sender-title {
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* 系统脚注 */
+.system-footer {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.system-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  /* box-shadow: 0 4px 12px rgba(0,0,0,0.08); */
+}
+
+.footer-text {
+  display: block;
+  color: #94a3b8;
   font-size: 12px;
-  color: gray;
-}
-
-.email-meta {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.timestamp {
-  font-size: 12px;
-  color: gray;
-}
-
-.security-icon {
-  font-size: 14px;
-  color: orange;
-}
-
-/* 邮件正文 */
-.email-content {
-  padding: 15px;
-  line-height: 1.6;
-  color: #333;
-}
-
-/* 时间、地点信息 */
-.event-info {
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  margin: 10px;
-}
-
-.event-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 5px;
-}
-
-.emoji {
-  font-size: 16px;
-}
-
-.link {
-  color: #007aff;
-  text-decoration: underline;
-}
-.logo image{
   margin-top: 10px;
-  margin-left: 5px;
-  width: 100px;
-  height: 100px;
-}
-/* 署名 */
-.signature {
-  padding: 15px;
-  font-style: italic;
-}
-.buttons{
-  gap: 20px;
-  display: flex;
-}
-.reject{
-  margin-left: 20px;
-  width: 50%;
-  background-color: #9c9c9c;
-  color: white;
-}
-.accept{
-  margin-right: 20px;
-  width: 50%;
-  background-color: #684edf;
-  color: white;
 }

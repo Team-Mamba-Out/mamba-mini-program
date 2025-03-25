@@ -35,11 +35,11 @@
   font-size: 38rpx;
   font-weight: 600;
   color: #333;
-  padding: 5rpx;
+  padding: 6rpx;
 }
 
 .status-tag {
-  padding: 8rpx 24rpx;
+  padding: 8rpx 30rpx;
   border-radius: 40rpx;
   font-size: 24rpx;
 }
@@ -172,7 +172,7 @@
   margin: 24rpx 0rpx;
   border-radius: 24rpx;
   box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.06);
-  padding: 30rpx;
+  padding: 50rpx 30rpx;
   text-align: center;
   color: #333;
   font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -257,16 +257,23 @@
   margin-bottom: 5rpx;
 }
 
-.schedule-block[data-status="busy"] {
+.schedule-block[data-status="Class"] {
   border-color: #684edf;
   background: #f1eefa;
   overflow: hidden;
 }
 
-/* .schedule-block[data-status="course"] {
+.schedule-block[data-status="Repairing"] {
   border-color: #ffb347;
   background: rgba(255,179,71,0.08);
-} */
+  overflow: hidden;
+}
+
+.schedule-block[data-status="Reserved"] {
+  border-color: #ff8484;
+  background: rgba(255, 71, 71, 0.08);
+  overflow: hidden;
+}
 
 .schedule-time {
   font-size: 24rpx;

@@ -74,8 +74,8 @@
         </view>
 
         <view class="schedule-column">
-          <view wx:for="{{currentSchedule}}" wx:key="index" class="schedule-block" style="top: {{item.position}}rpx; height: {{item.height}}rpx;" data-status="{{item.status}}">
-            <text class="schedule-title" wx:if="{{item.status === 'busy'}}">{{item.title || 'Reserved'}}</text>
+          <view wx:for="{{currentSchedule}}" wx:key="index" class="schedule-block" style="top: {{item.position}}rpx; height: {{item.height}}rpx;" data-status="{{item.title}}">
+            <text class="schedule-title" wx:if="{{item.status === 'busy'}}">{{item.title}}</text>
             <text class="schedule-time">From {{item.startTime}} to {{item.endTime}}</text>
           </view>
         </view>

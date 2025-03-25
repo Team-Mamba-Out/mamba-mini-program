@@ -17,7 +17,8 @@ Page({
     showRecords:null,
     isloading:false,
     pageNum:1,
-    total:0
+    total:0,
+    totalMessage: null
   },
   checkIn(e){
     let id = e.currentTarget.dataset.item.id
@@ -248,7 +249,8 @@ this.getRecord()
     let userInfo = wx.getStorageSync('userInfo')
     this.setData({
       userInfo,
-      active: 'order'
+      active: 'order',
+      totalMessage: app.globalData.unread
     });
     if (!userInfo) {
       return
@@ -270,7 +272,8 @@ this.getRecord()
     const userInfo = wx.getStorageSync('userInfo');
     this.setData({
       userInfo,
-      pageNum:1
+      pageNum:1,
+      totalMessage: app.globalData.unread
     })
     if (!userInfo) {
       wx.showModal({

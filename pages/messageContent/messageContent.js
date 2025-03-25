@@ -19,7 +19,8 @@ Page({
     },
     userInfo:null,
     startTime: '',
-    endTime: ''
+    endTime: '',
+    rooms: []
   },
   reject(){
     wx.request({
@@ -69,7 +70,6 @@ Page({
   onLoad(options) {
     let userInfo = wx.getStorageSync('userInfo')
     let message = wx.getStorageSync('message')
-    message = { ...message, sender: 'System' }
     const timeMatches = message.text.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/g);
     let startTime = null;
     let endTime = null;
@@ -83,7 +83,8 @@ Page({
       endTime,
       message,
       "message.icon": icon,
-      userInfo
+      userInfo,
+      rooms: app.globalData.rooms
     })
     wx.setStorageSync('message', null)
   },
