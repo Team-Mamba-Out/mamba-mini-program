@@ -265,7 +265,7 @@ Page({
       date.setDate(today.getDate() + i);
 
       const year = date.getFullYear();
-      const month = date.getMonth() + 1; 
+      const month = date.getMonth() + 1;
       const day = date.getDate();
       const fullDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
@@ -360,6 +360,8 @@ Page({
     wx.showModal({
       title: 'Confirm Reservation',
       content: `Confirm -- date: ${selectedDate} - room: ${roomName}`,
+      cancelText: 'Cancel',
+      confirmText: 'Confirm',
       success: (res) => {
         if (res.confirm) {
           // 跳转到目标页面并传递一个简单标识符

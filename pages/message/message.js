@@ -187,7 +187,9 @@ Page({
     if (!userInfo) {
       wx.showModal({
         title: 'Warning',
-        content: 'Please log in before using.',
+        content: 'Please log in before using.',        
+        cancelText: 'Cancel',
+        confirmText: 'Confirm',
         complete: (res) => {
           if (res.confirm) {
             wx.navigateTo({

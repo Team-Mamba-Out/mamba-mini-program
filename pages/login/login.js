@@ -48,6 +48,11 @@ Page({
               userInfo
             })
             wx.setStorageSync('userInfo', userInfo)
+            wx.showToast({
+              title: 'Login Successfully!',
+              icon: "success",
+              duration: 2000
+            })
             let url = '/pages/' + this.data.url + '/' + this.data.url
             wx.switchTab({
               url: url,
