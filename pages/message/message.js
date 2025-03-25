@@ -21,16 +21,19 @@ Page({
       announcements: 3,
       messages: 4
     },
+    totalMessage: null,
     startX: 0 // 记录滑动起点
   },
 
   updateUnreadCount() {
-    const unreadAnnouncementCount = this.data.messages.filter(msg => !msg.read && msg.receiver===this.data.userInfo.uid).length;
-    const unreadMessageCount = this.data.messages.filter(msg => !msg.read && msg.senderId==this.data.userInfo.uid).length;
+    const unreadAnnouncementCount = this.data.messages.filter(msg => !msg.read && msg.receiver === this.data.userInfo.uid).length;
+    const unreadMessageCount = this.data.messages.filter(msg => !msg.read && msg.senderId == this.data.userInfo.uid).length;
     this.setData({
       'unread.announcements': unreadAnnouncementCount,
       'unread.messages': unreadMessageCount,
+      totalMessage: unreadAnnouncementCount + unreadMessageCount,
     });
+    app.globalData.unread = this.data.totalMessage;
   },
   navigateToContent(e) {
     let id = e.currentTarget.dataset.id
@@ -41,7 +44,7 @@ Page({
         data: {
           id
         },
-        fail:(err)=>{
+        fail: (err) => {
           console.log(err);
         }
       })
@@ -68,30 +71,30 @@ Page({
       success: (res) => {
         let messages = res.data.data.messages
         messages = messages.map(item => ({
-          ...item, offset: 0,  shortContent: item.text.length > 90 ? item.text.substring(0, 90) + '...' : item.text, createTime: item.createTime.replace("T", " "),senderId:item.sender.split(";")[0],sender:item.sender.split(";")[1]
+          ...item, offset: 0, shortContent: item.text.length > 90 ? item.text.substring(0, 90) + '...' : item.text, createTime: item.createTime.replace("T", " "), senderId: item.sender.split(";")[0], sender: item.sender.split(";")[0] == 1 ? "System Admin" : item.sender.split(";")[1]
         }))
         wx.request({
           url: `http://${app.globalData.baseUrl}:8080/messages/getSendMessage/${uid}`,
-          method:'GET',
-          success:(res)=>{
+          method: 'GET',
+          success: (res) => {
             let messages1 = res.data.data.messages
             messages1 = messages1.map(item => ({
-              ...item, offset: 0,  shortContent: item.text.length > 90 ? item.text.substring(0, 90) + '...' : item.text, createTime: item.createTime.replace("T", " "),senderId:item.sender.split(";")[0],sender:item.sender.split(";")[1]
+              ...item, offset: 0, shortContent: item.text.length > 90 ? item.text.substring(0, 90) + '...' : item.text, createTime: item.createTime.replace("T", " "), senderId: item.sender.split(";")[0], sender: item.sender.split(";")[1]
             }))
-            let newMessage=[...messages,...messages1]
+            let newMessage = [...messages, ...messages1]
             console.log(newMessage);
             newMessage = newMessage.reverse()
             this.setData({
-              messages:newMessage
+              messages: newMessage
             })
             this.updateUnreadCount()
           }
         })
       }
     })
-    
-    
-    
+
+
+
   },
   // 触摸移动
   touchMove(e) {
@@ -136,8 +139,8 @@ Page({
     setTimeout(() => {
       wx.request({
         url: `http://${app.globalData.baseUrl}:8080/messages/delete/${id}`,
-        method:'DELETE',
-        success:()=>{
+        method: 'DELETE',
+        success: () => {
           this.getMessages()
         }
       })
@@ -196,6 +199,7 @@ Page({
       return
     }
     this.getMessages()
+    app.globalData.unread = this.data.totalMessage;
   },
 
   /**

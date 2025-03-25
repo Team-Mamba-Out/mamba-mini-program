@@ -1,0 +1,106 @@
+// 判断是否为Room Reassignment类型消息
+function isRoomReassignment(message) {
+  return message.title === 'Room Reassignment Notification';
+}
+
+// 判断是否为成功预定房间消息
+function isRoomReservationSuccessful(message) {
+  return message.title === 'Reserve Room successfully';
+}
+
+// 判断是否为取消预定房间消息
+function isRoomReservationCancelled(message) {
+  return message.title === 'Room Reservation Cancellation';
+}
+
+// 判断是否为通过预定房间消息
+function isRoomReservationApproved(message) {
+  return message.title === 'Room Reservation Approved';
+}
+
+// 判断是否为拒绝预定房间消息
+function isRoomReservationRejected(message) {
+  return message.title === 'Room Reservation Rejected';
+}
+
+// 判断是否为用户消息
+function isUserMessage(message) {
+  return message.receiver === 1;
+}
+
+/// 安全解析工具函数（核心逻辑）
+function safeParse(text, startKey, endKey) {
+  var start = text.indexOf(startKey);
+  if (start === -1) return '';
+  start += startKey.length;
+
+  var end = text.indexOf(endKey, start);
+  if (end === -1) end = text.length;
+
+  return text.slice(start, end).trim();
+}
+
+// ----------------- 新版解析函数 -----------------
+// 解析原时间（适配Room Reassignment）
+function parseOriginalTime(text) {
+  var time = safeParse(text, ') at ', ' is');
+  return time.replace("T", " ");
+}
+
+// 解析原房间（适配Room Reassignment）
+function parseOriginalRoom(text) {
+  return safeParse(text, 'room(', ')');;
+}
+
+// 解析新房间（适配Room Reassignment）
+function parseNewRoom(text) {
+  return safeParse(text, 'reassigned to room ', ' from');
+}
+
+// 解析时间段（通用方法）
+function parseDuration(text) {
+  var start = safeParse(text, 'from ', ' to');
+  var end = safeParse(text, ' to '+ safeParse(start, '','T'), '. The');
+  var time = start.replace("T", " ") + " to " + end.replace("T", " ");  
+  return time;
+}
+
+// 解析变更原因（适配Room Reassignment）
+function parseReason(text) {
+  return safeParse(text, 'reason is: ', '. Please');
+}
+
+// 解析房间名（多关键词兼容）
+function parseRoom(text) {
+  // 优先尝试 for: ... has 模式
+  var room = safeParse(text, 'for: ', ' has'); 
+  if (room) return room;
+
+  // 尝试 room ... has 模式
+  return safeParse(text, 'room ', ' has');
+}
+
+// 解析时间段（精确锚定）
+function parseTime(text) {
+  var start = safeParse(text, 'reservation is from ', ' to');
+  var end = safeParse(text, ' to '+ safeParse(start, '','T'), '. Please');
+  var time = start.replace("T", " ") + " to " + end.replace("T", " ");  
+  return time;
+}
+
+// 将所有函数暴露给外部使用
+module.exports = {
+  isRoomReassignment: isRoomReassignment,
+  isRoomReservationSuccessful: isRoomReservationSuccessful,
+  isRoomReservationCancelled: isRoomReservationCancelled,
+  isRoomReservationApproved: isRoomReservationApproved,
+  isRoomReservationRejected: isRoomReservationRejected,
+  isUserMessage: isUserMessage,
+  parseOriginalTime: parseOriginalTime,
+  parseOriginalRoom: parseOriginalRoom,
+  parseNewRoom: parseNewRoom,
+  parseDuration: parseDuration,
+  parseReason: parseReason,
+  parseRoom: parseRoom,
+  parseTime: parseTime
+};

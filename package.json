@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@vant/weapp": "^1.11.7",
-    "regenerator-runtime": "^0.14.1"
+    "regenerator-runtime": "^0.14.1",
+    "vant": "^2.13.6"
   }
 }

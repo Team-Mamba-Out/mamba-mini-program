@@ -2,10 +2,10 @@
 <view class="container1">
   <view class="tab-container">
     <view class="tab-item" bindtap="switchTab" data-tab="announcements">
-      <van-icon name="notes" wx:if="{{activeTab != 'announcements'&& unread.announcements === 0}}" color="#797979" style="margin-right: 10px;" size="20px" />
-      <van-icon name="notes" wx:if="{{ activeTab != 'announcements' && unread.announcements > 0 }}" info="{{ unread.announcements }}" style="margin-right: 10px;" size="20px" />
-      <van-icon name="notes" wx:if="{{activeTab === 'announcements' && unread.announcements === 0}}" color="#674ed4" style="margin-right: 10px;" size="20px" />
-      <van-icon name="notes" wx:if="{{ activeTab === 'announcements' && unread.announcements > 0 }}" info="{{ unread.announcements }}" style="margin-right: 10px;" size="20px" color="#674ed4" />
+      <van-icon name="volume" wx:if="{{activeTab != 'announcements'&& unread.announcements === 0}}" color="#797979" style="margin-right: 10px;" size="20px" />
+      <van-icon name="volume" wx:if="{{ activeTab != 'announcements' && unread.announcements > 0 }}" info="{{ unread.announcements }}" style="margin-right: 10px;" size="20px" />
+      <van-icon name="volume" wx:if="{{activeTab === 'announcements' && unread.announcements === 0}}" color="#674ed4" style="margin-right: 10px;" size="20px" />
+      <van-icon name="volume" wx:if="{{ activeTab === 'announcements' && unread.announcements > 0 }}" info="{{ unread.announcements }}" style="margin-right: 10px;" size="20px" color="#674ed4" />
       <text class="{{ activeTab === 'announcements' ? 'active' : ''  }}" style="font-size: 15px;">Announcements</text>
     </view>
 
@@ -68,7 +68,8 @@
 </view>
 <van-tabbar active="{{ active }}" active-color="#674ed4" inactive-color="#919191" bind:change="onChange">
   <van-tabbar-item name="index" icon="wap-home">Home</van-tabbar-item>
-  <van-tabbar-item name="message" icon="comment">Message</van-tabbar-item>
-  <van-tabbar-item name="order" icon="todo-list">Order</van-tabbar-item>
+  <van-tabbar-item name="message" icon="comment" wx:if="{{totalMessage == 0}}">Message</van-tabbar-item>
+  <van-tabbar-item name="message" icon="comment" wx:if="{{totalMessage > 0}}" dot>Message</van-tabbar-item>
+  <van-tabbar-item name="order" icon="notes">Order</van-tabbar-item>
   <van-tabbar-item name="profile" icon="contact">Profile</van-tabbar-item>
 </van-tabbar>

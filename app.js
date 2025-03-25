@@ -14,6 +14,8 @@ App({
     })
   },
   globalData: {
+    rooms: [],
+    unread: null,
     userInfo: null,
     baseUrl:'localhost'
   }

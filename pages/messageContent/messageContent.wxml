@@ -1,25 +1,207 @@
-<view class="container1">
-  <view class="sender-info">
-    <view class="avatar">{{message.icon}}</view>
-    <view class="sender-details">
-      <view class="sender-name">{{message.sender}}</view>
-      <view class="recipient">{{message.title}}</view>
+<wxs src="../../utils/messageProcess.wxs" module="utils"></wxs>
+
+<view class="container">
+  <!-- 邮件卡片 -->
+  <view class="email-card">
+    <!-- 邮件头 -->
+    <view class="email-header" wx:if="{{!utils.isUserMessage(message)}}">
+      <text class="notification-badge">SYSTEM NOTIFICATION</text>
+      <text class="email-title">{{message.title}}</text>
+      <view class="meta-info">
+        <text class="meta-item">⏰ {{message.createTime}}</text>
+      </view>
     </view>
-    <view class="email-meta">
-      <text class="timestamp">{{message.timestamp}}</text>
-      <view class="security-icon">📌</view>
+
+    <view class="email-header" wx:elif="{{utils.isUserMessage(message)}}">
+      <text class="notification-badge">USER MESSAGE</text>
+      <text class="email-title">{{message.title}}</text>
+      <view class="meta-info">
+        <text class="meta-item">⏰ {{message.createTime}}</text>
+        <text class="meta-item">📮 to Admin</text>
+      </view>
+    </view>
+
+    <!-- 正文内容 -->
+    <view class="content-section">
+      <!-- 根据不同类型消息展示不同的内容 -->
+      <view wx:if="{{utils.isRoomReassignment(message)}}">
+        <!-- Room Reassignment Notification 类型 -->
+        <view class="info-text-reassign">
+          {{message.text}}
+        </view>
+        <view class="info-card warning">
+          <text class="card-title">⚠️ Important Change</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <view>
+              <view class="info-text">Original Room:</view>
+              <text class="info-text">{{utils.parseOriginalRoom(message.text)}}</text>
+            </view>
+          </view>
+          <view class="info-row">
+            <text class="icon">🕰️</text>
+            <text class="info-text">Order Time: {{utils.parseOriginalTime(message.text)}}</text>
+          </view>
+        </view>
+
+        <view class="info-card update">
+          <text class="card-title">🆕 New Arrangement</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <view>
+              <view class="info-text">New Room:</view>
+              <text class="info-text">{{utils.parseNewRoom(message.text)}}</text>
+            </view>
+          </view>
+          <view class="info-row">
+            <text class="icon">⏳</text>
+            <view>
+              <view class="info-text">Duration:</view>
+              <text class="info-text">{{utils.parseDuration(message.text)}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="info-card reason">
+          <text class="card-title">🏷️ Change Reason</text>
+          <view class="reason-content">{{utils.parseReason(message.text)}}</view>
+        </view>
+
+        <view class="buttons">
+          <button class="reject {{isButtonDisabled ? 'disabled' : ''}}" disabled="{{isButtonDisabled}}" bindtap="reject">❌ Decline Change</button>
+          <button class="accept {{isButtonDisabled ? 'disabled' : ''}}" disabled="{{isButtonDisabled}}" bindtap="accept">✔️ Accept New Room</button>
+        </view>
+      </view>
+
+      <view wx:elif="{{utils.isRoomReservationSuccessful(message)}}">
+        <!-- Reserve Room Successfully 类型 -->
+        <view class="info-card reason">
+          <text class="card-title">📆 Room Reservation</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <view>
+              <view class="info-text">Room:</view>
+              <text class="info-text">{{utils.parseRoom(message.text)}}</text>
+            </view>
+          </view>
+          <view class="info-row">
+            <text class="icon">⏳</text>
+            <view>
+              <view class="info-text">Time:</view>
+              <text class="info-text">{{utils.parseTime(message.text)}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:elif="{{utils.isRoomReservationCancelled(message)}}">
+        <!-- Room Reservation Cancellation 类型 -->
+        <view class="info-card warning">
+          <text class="card-title">⭕ Reservation Cancelled</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <view>
+              <view class="info-text">Room:</view>
+              <text class="info-text">{{utils.parseRoom(message.text)}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:elif="{{utils.isRoomReservationApproved(message)}}">
+        <!-- Room Reservation Approved 类型 -->
+        <view class="info-card reason">
+          <text class="card-title">✔️ Reservation Approved</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <view>
+              <view class="info-text">Room:</view>
+              <text class="info-text">{{utils.parseRoom(message.text)}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:elif="{{utils.isRoomReservationRejected(message)}}">
+        <!-- Room Reservation Rejected 类型 -->
+        <view class="info-card warning">
+          <text class="card-title">🚫 Reservation Rejected</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <view>
+              <view class="info-text">Room:</view>
+              <text class="info-text">{{utils.parseRoom(message.text)}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{!utils.isUserMessage(message) && !utils.isRoomReassignment(message)}}" class="info-text">
+        {{message.text}}
+      </view>
+
+      <view wx:elif="{{utils.isUserMessage(message)}}">
+        <!-- 用户发送的消息 -->
+        <view class="info-card" wx:if="{{message.type === 1}}">
+          <text class="card-title">⚙️ Room Repair</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <text class="info-text-title">Room</text>
+          </view>
+          <view class="info-text-user">{{rooms[message.roomId-1].roomName}}</view>
+          <view class="info-row">
+            <text class="icon">🔨</text>
+            <text class="info-text-title">Problem</text>
+          </view>
+          <view class="info-text-user">{{message.text}}</view>
+        </view>
+
+        <view class="info-card" wx:if="{{message.type === 2}}">
+          <text class="card-title">📒 Further Reservation</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <text class="info-text-title">Room</text>
+          </view>
+          <view class="info-text-user">{{rooms[message.roomId-1].roomName}}</view>
+          <view class="info-row">
+            <text class="icon">📩</text>
+            <text class="info-text-title">Comment</text>
+          </view>
+          <view class="info-text-user">{{message.text}}</view>
+        </view>
+
+        <view class="info-card" wx:if="{{message.type === 0}}">
+          <text class="card-title">✉️ Feedback Message</text>
+          <view class="info-row" wx:if="{{message.roomId}}">
+            <text class="icon">🏫</text>
+            <text class="info-text-title">Room</text>
+          </view>
+          <view class="info-text-user" wx:if="{{message.roomId}}">{{rooms[message.roomId-1].roomName}}</view>
+          <view class="info-row">
+            <text class="icon">📃</text>
+            <text class="info-text-title">Details</text>
+          </view>
+          <text class="info-text-user">{{message.text}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 发件人信息 -->
+    <view class="sender-info" wx:if="{{!utils.isUserMessage(message)}}">
+      <text class="signature">Best regards,</text>
+      <text class="sender-name">{{message.sender}}</text>
+      <text class="sender-title">Facility Management Team</text>
+    </view>
+
+    <view class="sender-info" wx:if="{{utils.isUserMessage(message)}}">
+      <text class="signature">From, </text>
+      <text class="sender-name">{{message.sender}}</text>
     </view>
   </view>
 
-  <!-- 邮件正文 -->
-  <view class="email-content">
-    {{message.text}}
-  </view>
-  <view wx:if="{{message.title==='Room Reassignment Notification'}}" class="buttons">
-    <button bind:tap="reject" class="reject">Reject</button>
-    <button bind:tap="accept" class="accept">Accept</button>
-  </view>
-  <view class="logo">
-    <image src="/img/logo.jpg" mode=""/>
+  <!-- 系统LOGO -->
+  <view class="system-footer">
+    <image src="/img/logo.jpg" class="system-logo" />
+    <text class="footer-text">Powered by Room Management System</text>
   </view>
 </view>
