@@ -57,7 +57,7 @@
           <view class="ref-no"> Order: {{item.recordTime}}</view>
           <view class="actions">
             <button wx:if="{{item.status!='Done' & item.status !='Overdue' & item.status!='Cancelled'}}" bind:tap="cancel" data-item="{{item}}" class="cancel-btn">Cancel</button>
-            <button wx:if="{{item.allowCheckIn}}" bind:tap="checkIn" data-item="{{item}}" class="check-in-btn">Check in</button>
+            <button wx:if="{{item.allowCheckIn && item.status !='Cancelled'}}" bind:tap="checkIn" data-item="{{item}}" class="check-in-btn">Check in</button>
             <text wx:if="{{item.status=='Done' & item.hasCheckedIn}}" class="paid-text">✔ Finished</text>
             <text wx:if="{{item.status=='Overdue'}}" class="overdue-text">❌ Overdue</text>
           </view>

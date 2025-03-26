@@ -14,8 +14,8 @@ Page({
     color: [],
     messages: [],
     unread: {
-      announcements: 3,
-      messages: 4
+      announcements: 0,
+      messages: 0
     },
     totalMessage: null,
     startX: 0 // 记录滑动起点

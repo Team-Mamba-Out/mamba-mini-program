@@ -358,8 +358,8 @@ Page({
     });
 
     wx.showModal({
-      title: 'Confirm Reservation',
-      content: `Confirm -- date: ${selectedDate} - room: ${roomName}`,
+      title: 'Booking Now',
+      content: `Date: ${selectedDate} Room: ${roomName}`,
       cancelText: 'Cancel',
       confirmText: 'Confirm',
       success: (res) => {

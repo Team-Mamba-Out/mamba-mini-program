@@ -98,6 +98,7 @@ Page({
           this.setData({
             avatarText: 'T'
           })
+          app.globalData.unread = 0;
           this.onLoad()
         }
       }

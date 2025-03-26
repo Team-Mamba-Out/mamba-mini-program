@@ -66,6 +66,7 @@
 
     <!-- 时间轴主体 -->
     <view class="time-container" wx:if="{{currentSchedule.length !== 0}}" bindtap="handleBook" data-date="{{activeDate}}">
+      <view class="book-title">Click to book now! 😊</view> 
       <view class="time-column">
         <view class="time-labels">
           <view wx:for="{{timeLabels}}" wx:key="index" class="time-label">
