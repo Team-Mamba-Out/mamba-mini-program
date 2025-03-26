@@ -216,3 +216,109 @@
   font-style: italic;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 43%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  background-color: rgba(63, 62, 62, 0.5); /* 半透明背景 */
+  z-index: 2;
+}
+.preview-container {
+  background-color: white;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 100%; /* 或其他尺寸 */
+  
+}
+.section {
+  
+  background: white;
+  
+  padding: 26rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.tag {
+  width: 28%;
+  padding: 12rpx 8rpx;
+  border-radius: 8rpx;
+  background: #e8e6f3;
+  color: #5e4bb1;
+  text-align: center;
+  font-size: 28rpx;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.tag.active {
+  background: #5e46c9;
+  color: white;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.tag.active::after {
+  content: '✓';
+  position: absolute;
+  right: 12rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28rpx;
+  color: white;
+}
+/* Section Title */
+.section-title {
+  display: block;
+  font-size: 34rpx;
+  color: #5e46c9;
+  margin-bottom: 28rpx;
+  margin-top: 5rpx;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.message-input {
+  width: 92%;
+  height: 240rpx;
+  padding: 24rpx;
+  background: #f8f9fa;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+  color: #212529;
+  border: 2rpx solid #e0e0e0;
+  transition: border-color 0.2s ease-in-out;
+}
+.submit-container {
+  background-color: white;
+  margin-bottom: 18px;
+}
+
+.submit-btn {
+  background: linear-gradient(45deg, #684edf, #972df5);
+  color: white;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  height: 96rpx;
+  line-height: 96rpx;
+  transition: opacity 0.3s, transform 0.2s ease-in-out;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  margin: 0px 60px;
+}
+
+.submit-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}

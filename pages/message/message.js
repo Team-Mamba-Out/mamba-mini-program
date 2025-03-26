@@ -9,7 +9,6 @@ Page({
   data: {
     activeTab: 'announcements',
     active: "message",
-    
     userInfo: null,
     color: [],
     messages: [],

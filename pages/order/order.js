@@ -6,6 +6,12 @@ Page({
    * 页面的初始数据
    */
   data: {
+    cancelId:null,
+    activeType: null,
+    submitLoading: false,
+    typeLabels: ['Plan change', 'Equipment failure', 'Operational error', 'Emergency situation', 'Other'],
+    content: '',
+    showCancel: false,
     userInfo: null,
     selectedOrderType: "All",
     selectedTimeType: "Default",
@@ -14,11 +20,68 @@ Page({
     active: 'order',
     rooms: ["Teaching Room", "Activity Room", "Meeting Room"],
     records: [],
-    showRecords:null,
-    isloading:false,
-    pageNum:1,
-    total:0,
+    showRecords: null,
+    isloading: false,
+    pageNum: 1,
+    total: 0,
     totalMessage: null
+  },
+  submit() {
+    const { activeType, content, } = this.data;
+    console.log(activeType);
+    if (activeType === null) {
+      wx.showToast({ title: 'Please select message type', icon: 'none' });
+      return;
+    }
+
+    if (!content.trim()) {
+      wx.showToast({ title: 'Please enter content', icon: 'none' });
+      return;
+    }
+    let reasonId = activeType + 1
+    let reason = reasonId+';'+content
+    wx.request({
+      url: `http://${app.globalData.baseUrl}:8080/records/cancel`,
+      method: 'PUT',
+      data: { id:this.data.cancelId, reason},
+      header: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      success: (res) => {
+        this.setData({
+          pageNum: 1,
+          records: [],
+          selectedOrderType: 'All'
+        })
+        this.getRecord()
+        let token = wx.getStorageSync('token')
+        wx.request({
+          url: `http://${app.globalData.baseUrl}:8080/verify/getUserInfo`,
+          header: {
+            Authorization: token
+          },
+          method: 'GET',
+          success: (res) => {
+            let userInfo = res.data.data
+            this.setData({
+              userInfo,
+              showCancel: !this.data.showCancel,
+              content:''
+            })
+            wx.setStorageSync('userInfo', userInfo)
+          }
+        })
+      }
+    })
+  },
+  selectType(e) {
+    const index = parseInt(e.currentTarget.dataset.index);
+    this.setData({
+      activeType: this.data.activeType === index ? null : index
+    });
+  },
+  onContentChange(e) {
+    this.setData({ content: e.detail.value });
   },
   checkIn(e) {
     let id = e.currentTarget.dataset.item.id
@@ -37,6 +100,12 @@ Page({
         }),
           this.getRecord()
       }
+    })
+  },
+  closePreview() {
+    this.setData({
+      showCancel: !this.data.showCancel,
+      content:''
     })
   },
   // 显示排序选项
@@ -112,43 +181,16 @@ Page({
   cancel(e) {
     wx.showModal({
       title: 'Cancel Confirm',
-      content: `Cancelling three times will be marked`,      
+      content: `Cancelling three times will be marked`,
       cancelText: 'Cancel',
       confirmText: 'Confirm',
       success: (res) => {
         if (res.confirm) {
           let id = e.currentTarget.dataset.item.id
           console.log(id);
-          wx.request({
-            url: `http://${app.globalData.baseUrl}:8080/records/cancel`,
-            method: 'PUT',
-            data: { id,reason:'test' },
-            header: {
-              'content-type': 'application/x-www-form-urlencoded'
-            },
-            success: (res) => {
-              this.setData({
-                pageNum: 1,
-                records: [],
-                selectedOrderType: 'All'
-              })
-              this.getRecord()
-              let token = wx.getStorageSync('token')
-              wx.request({
-                url: `http://${app.globalData.baseUrl}:8080/verify/getUserInfo`,
-                header: {
-                  Authorization: token
-                },
-                method: 'GET',
-                success: (res) => {
-                  let userInfo = res.data.data
-                  this.setData({
-                    userInfo
-                  })
-                  wx.setStorageSync('userInfo', userInfo)
-                }
-              })
-            }
+          this.setData({
+            showCancel: true,
+            cancelId:id
           })
         }
       }
@@ -274,7 +316,7 @@ Page({
     const userInfo = wx.getStorageSync('userInfo');
     this.setData({
       userInfo,
-      pageNum:1,
+      pageNum: 1,
       totalMessage: app.globalData.unread
     })
     if (!userInfo) {

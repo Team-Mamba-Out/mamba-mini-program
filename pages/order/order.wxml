@@ -21,10 +21,10 @@
           </view>
           <view class="status-wrap">
             <view class="due-badge {{item.status!='Pending' & item.status!='Ongoing' ? 'paid' : 'due'}}">
-              
+
               <text wx:if="{{!item.approved && item.status === 'Pending'}}">Waiting</text>
               <text wx:if="{{item.approved}}">{{item.status}}</text>
-            
+
             </view>
             <view class="date-wrap">
               <view class="date1">{{item.day}}</view>
@@ -66,9 +66,27 @@
     </block>
   </view>
 </view>
-
-<view  style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-  <image wx:if="{{!showRecords}}" src="/img/Null Data.png" mode="" style="margin-bottom:10px;height: 30px; width: 30px;"/>
+<view wx:if="{{showCancel}}" class="overlay" catchtap="closePreview">
+</view>
+<view wx:if="{{showCancel}}" class="preview-container" catchtap="">
+  <view class="section">
+    <text class="section-title">Reason Type</text>
+    <view class="tag-container">
+      <view wx:for="{{typeLabels}}" wx:key="index" class="tag {{activeType === index ? 'active' : ''}}" data-index="{{index}}" catchtap="selectType">
+        {{item}}
+      </view>
+    </view>
+  </view>
+  <view class="section">
+    <text class="section-title">Reason</text>
+    <textarea class="message-input" placeholder="Please describe the reason in detail..." bindinput="onContentChange" value="{{content}}" maxlength="500"></textarea>
+  </view>
+  <view class="submit-container">
+    <button class="submit-btn" bindtap="submit" loading="{{submitLoading}}">Submit</button>
+  </view>
+</view>
+<view style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <image wx:if="{{!showRecords}}" src="/img/Null Data.png" mode="" style="margin-bottom:10px;height: 30px; width: 30px;" />
   <text class="remind"> No more data here!</text>
 </view>
 <van-tabbar active="{{ active }}" active-color="#674ed4" inactive-color="#919191" bind:change="onChange">
