@@ -55,7 +55,7 @@
       <text class="info-value">{{userInfo.phone}}</text>
     </block>
   </view>
-  <view class="info-item">
+  <view wx:if="{{userInfo.role==='Student'}}" class="info-item">
     <van-icon name="diamond" color="#674ed4" size="20px" />
     <text class="label">Credit</text>
     <block>
@@ -64,7 +64,7 @@
       </view>
     </block>
   </view>
-  <view bind:tap="showTips" class="tips">
+  <view wx:if="{{userInfo.role==='Student'}}" bind:tap="showTips" class="tips">
     <image src="/img/wenhao.png" mode="" />
   </view>
 </view>

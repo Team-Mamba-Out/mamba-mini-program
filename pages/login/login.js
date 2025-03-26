@@ -40,8 +40,16 @@ Page({
     let email = this.data.email
     wx.request({
       url: `http://${app.globalData.baseUrl}:8080/verify/validate?email=${email}&codeInput=${code}`,
-      method: 'GET',
-      success: (res) => {
+
+      method:'GET',
+      success:(res)=>{
+        if (res.data.code != 200) {
+          wx.showToast({
+            icon:'error',
+            title: 'Invalid Code!',
+          })
+          return
+        }
         let token = res.data.data
         this.setData({
           token
