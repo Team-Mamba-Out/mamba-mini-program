@@ -183,7 +183,6 @@ Page({
     const rooms = this.data.rooms;
     const roomsString = JSON.stringify(rooms);
     const userId = this.data.userInfo.uid;
-    
     if (this.data.userInfo.breakTimer >= 4) {
       wx.showToast({
         title: 'You have been banned this month due to misconduct!',

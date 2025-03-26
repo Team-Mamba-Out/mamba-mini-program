@@ -345,3 +345,10 @@
   width: 100rpx;
   height: 100rpx;
 }
+
+.book-title{
+  text-align: center;
+  width: 100%;
+  text-align: center;
+  margin: 10px;
+}

@@ -23,6 +23,16 @@ function isRoomReservationRejected(message) {
   return message.title === 'Room Reservation Rejected';
 }
 
+// 判断是否为房间开始消息
+function isRoomReservationBegin(message) {
+  return message.title === 'Room Reservation Beginning Soon';
+}
+
+// 判断是否为房间取消消息
+function isRoomReservationCancelledAdmin(message) {
+  return message.title === 'Room Reservation Cancelled By Admin';
+}
+
 // 判断是否为用户消息
 function isUserMessage(message) {
   return message.receiver === 1;
@@ -95,6 +105,8 @@ module.exports = {
   isRoomReservationCancelled: isRoomReservationCancelled,
   isRoomReservationApproved: isRoomReservationApproved,
   isRoomReservationRejected: isRoomReservationRejected,
+  isRoomReservationBegin: isRoomReservationBegin,
+  isRoomReservationCancelledAdmin: isRoomReservationCancelledAdmin,
   isUserMessage: isUserMessage,
   parseOriginalTime: parseOriginalTime,
   parseOriginalRoom: parseOriginalRoom,

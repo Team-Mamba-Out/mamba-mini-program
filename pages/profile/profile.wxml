@@ -14,21 +14,18 @@
       <van-icon name="edit" size="43rpx" color="#674ed4" />
     </view>
     <view wx:if="{{isEditing}}" class="cancel" bind:tap="cancel">
-      Cancel <van-icon name="cross" size="30rpx" style="margin-left: 6rpx;"/>
+      Cancel
+      <van-icon name="cross" size="30rpx" style="margin-left: 6rpx;" />
     </view>
     <view wx:if="{{isEditing}}" class="save" bind:tap="save">
-      Save <van-icon name="success" size="30rpx" style="margin-left: 6rpx;"/>
+      Save
+      <van-icon name="success" size="30rpx" style="margin-left: 6rpx;" />
     </view>
   </view>
   <view class="info-item">
     <van-icon name="coupon" color="#674ed4" size="20px" />
     <text class="label">Role</text>
-    <block wx:if="{{isEditing}}">
-      <input disabled class="info-input" bindinput="handleInput" data-field="role" value="{{userInfo.role}}" />
-    </block>
-    <block wx:else>
-      <text class="info-value">{{userInfo.role}}</text>
-    </block>
+    <text class="info-value">{{userInfo.role}}</text>
   </view>
 
   <view class="info-item">
@@ -45,12 +42,7 @@
   <view class="info-item">
     <van-icon name="invitation" color="#674ed4" size="20px" />
     <text class="label">E-mail</text>
-    <block wx:if="{{isEditing}}">
-      <input disabled class="info-input" bindinput="handleInput" data-field="email" value="{{userInfo.email}}" />
-    </block>
-    <block wx:else>
-      <text class="info-value">{{userInfo.email}}</text>
-    </block>
+    <text class="info-value">{{userInfo.email}}</text>
   </view>
 
   <view class="info-item">

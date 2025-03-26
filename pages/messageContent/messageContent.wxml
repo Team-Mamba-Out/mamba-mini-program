@@ -125,7 +125,7 @@
       <view wx:elif="{{utils.isRoomReservationRejected(message)}}">
         <!-- Room Reservation Rejected 类型 -->
         <view class="info-card warning">
-          <text class="card-title">🚫 Reservation Rejected</text>
+          <text class="card-title">🚫 Reservation RejectedCancelled</text>
           <view class="info-row">
             <text class="icon">🏫</text>
             <view>
@@ -133,6 +133,24 @@
               <text class="info-text">{{utils.parseRoom(message.text)}}</text>
             </view>
           </view>
+        </view>
+      </view>
+
+      <view wx:elif="{{utils.isRoomReservationCancelledAdmin(message)}}">
+        <!-- Room Reservation Rejected 类型 -->
+        <view class="info-card warning">
+          <text class="card-title">🚫 Reservation Cancelled</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <view>
+              <view class="info-text">Room:</view>
+              <text class="info-text">{{utils.parseRoom(message.text)}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="info-card reason" wx:if="{{utils.parseReason(message.text) !== null}}">
+          <text class="card-title">🏷️ Change Reason</text>
+          <view class="reason-content">{{utils.parseReason(message.text)}}</view>
         </view>
       </view>
 
