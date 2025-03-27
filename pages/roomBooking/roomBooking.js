@@ -4,7 +4,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    userInfo:null,
+    userInfo: null,
     selectedDate: null,
     room: null,
     schedule: null,
@@ -173,6 +173,19 @@ Page({
         selectedSlots: [key], // Track the new start slot
       });
     }
+
+    const startMinutes = this.timeToMinutes(this.data.startTime);
+    const endMinutes = this.timeToMinutes(this.data.endTime);
+
+    if (endMinutes <= startMinutes) {
+      wx.showToast({ title: 'The end time must be after start time!', icon: 'none', duration: 1500 });
+      this.setData({
+        startTime: null,
+        endTime: null,
+        selectedSlots: [],
+      });
+      return;
+    }
   },
 
   /**
@@ -204,7 +217,7 @@ Page({
 
     // 如果有冲突，则清空之前的选择并提示
     if (conflict) {
-      wx.showToast({ title: '选中的时间段有冲突，请重新选择', icon: 'none' });
+      wx.showToast({ title: 'The selected time period has conflict!', icon: 'none' });
       this.setData({
         startTime: null,
         endTime: null,
@@ -220,7 +233,7 @@ Page({
 
   handleSubmit() {
     if (this.data.selectedSlots.length === 0) {
-      wx.showToast({ title: '请选择时间段', icon: 'none' });
+      wx.showToast({ title: 'Please choose a valid time duration!', icon: 'none' });
       return;
     }
 
@@ -250,7 +263,7 @@ Page({
           wx.navigateBack({
             delta: 1,
             success: () => {
-              this.onShow(); 
+              this.onShow();
             }
           });
           if (res.data.code === 500) {

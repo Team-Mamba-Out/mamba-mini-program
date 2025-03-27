@@ -66,7 +66,7 @@ Page({
       success: (res) => {
         let messages = res.data.data.messages
         messages = messages.map(item => ({
-          ...item, offset: 0, shortContent: item.text.length > 90 ? item.text.substring(0, 90) + '...' : item.text, createTime: item.createTime.replace("T", " "), senderId: item.sender.split(";")[0], sender: item.sender.split(";")[0] == 1 ? "System Admin" : item.sender.split(";")[1]
+          ...item, offset: 0, shortContent: item.text.length > 85 ? item.text.substring(0, 85) + '...' : item.text, createTime: item.createTime.replace("T", " "), senderId: item.sender.split(";")[0], sender: item.sender.split(";")[0] == 1 ? "System Admin" : item.sender.split(";")[1]
         }))
         wx.request({
           url: `http://${app.globalData.baseUrl}:8080/messages/getSendMessage/${uid}`,
@@ -74,7 +74,7 @@ Page({
           success: (res) => {
             let messages1 = res.data.data.messages
             messages1 = messages1.map(item => ({
-              ...item, offset: 0, shortContent: item.text.length > 90 ? item.text.substring(0, 90) + '...' : item.text, createTime: item.createTime.replace("T", " "), senderId: item.sender.split(";")[0], sender: item.sender.split(";")[1]
+              ...item, offset: 0, shortContent: item.text.length > 85 ? item.text.substring(0, 85) + '...' : item.text, createTime: item.createTime.replace("T", " "), senderId: item.sender.split(";")[0], sender: item.sender.split(";")[1]
             }))
             let newMessage = [...messages, ...messages1]
             console.log(newMessage);

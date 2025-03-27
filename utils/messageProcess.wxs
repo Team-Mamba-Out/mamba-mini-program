@@ -28,6 +28,11 @@ function isRoomReservationBegin(message) {
   return message.title === 'Room Reservation Beginning Soon';
 }
 
+// 判断是否为房间结束消息
+function isRoomReservationEnd(message) {
+  return message.title === 'Room Reservation Ending Soon';
+}
+
 // 判断是否为房间取消消息
 function isRoomReservationCancelledAdmin(message) {
   return message.title === 'Room Reservation Cancelled By Admin';
@@ -86,6 +91,9 @@ function parseRoom(text) {
   var room = safeParse(text, 'for: ', ' has'); 
   if (room) return room;
 
+  var room = safeParse(text, 'for ', ' will'); 
+  if (room) return room;
+
   // 尝试 room ... has 模式
   return safeParse(text, 'room ', ' has');
 }
@@ -106,6 +114,7 @@ module.exports = {
   isRoomReservationApproved: isRoomReservationApproved,
   isRoomReservationRejected: isRoomReservationRejected,
   isRoomReservationBegin: isRoomReservationBegin,
+  isRoomReservationEnd: isRoomReservationEnd,
   isRoomReservationCancelledAdmin: isRoomReservationCancelledAdmin,
   isUserMessage: isUserMessage,
   parseOriginalTime: parseOriginalTime,

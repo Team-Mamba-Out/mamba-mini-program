@@ -122,6 +122,34 @@
         </view>
       </view>
 
+      <view wx:elif="{{utils.isRoomReservationBegin(message)}}">
+        <!-- Room Reservation Begin 类型 -->
+        <view class="info-card reason">
+          <text class="card-title">🚩 Reservation Start Soon</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <view>
+              <view class="info-text">Room:</view>
+              <text class="info-text">{{utils.parseRoom(message.text)}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:elif="{{utils.isRoomReservationEnd(message)}}">
+        <!-- Room Reservation End 类型 -->
+        <view class="info-card reason">
+          <text class="card-title">🚩 Reservation End Soon</text>
+          <view class="info-row">
+            <text class="icon">🏫</text>
+            <view>
+              <view class="info-text">Room:</view>
+              <text class="info-text">{{utils.parseRoom(message.text)}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
       <view wx:elif="{{utils.isRoomReservationRejected(message)}}">
         <!-- Room Reservation Rejected 类型 -->
         <view class="info-card warning">
@@ -137,7 +165,7 @@
       </view>
 
       <view wx:elif="{{utils.isRoomReservationCancelledAdmin(message)}}">
-        <!-- Room Reservation Rejected 类型 -->
+        <!-- Room Reservation Cancelled By Admin 类型 -->
         <view class="info-card warning">
           <text class="card-title">🚫 Reservation Cancelled</text>
           <view class="info-row">
@@ -164,9 +192,11 @@
           <text class="card-title">⚙️ Room Repair</text>
           <view class="info-row">
             <text class="icon">🏫</text>
-            <text class="info-text-title">Room</text>
+            <view>
+              <text class="info-text-title">Room:</text>
+              <view class="info-text">{{rooms[message.roomId-1].roomName}}</view>
+            </view>
           </view>
-          <view class="info-text-user">{{rooms[message.roomId-1].roomName}}</view>
           <view class="info-row">
             <text class="icon">🔨</text>
             <text class="info-text-title">Problem</text>
@@ -178,9 +208,11 @@
           <text class="card-title">📒 Further Reservation</text>
           <view class="info-row">
             <text class="icon">🏫</text>
-            <text class="info-text-title">Room</text>
+            <view>
+              <text class="info-text-title">Room:</text>
+              <view class="info-text">{{rooms[message.roomId-1].roomName}}</view>
+            </view>
           </view>
-          <view class="info-text-user">{{rooms[message.roomId-1].roomName}}</view>
           <view class="info-row">
             <text class="icon">📩</text>
             <text class="info-text-title">Comment</text>
@@ -192,9 +224,11 @@
           <text class="card-title">✉️ Feedback Message</text>
           <view class="info-row" wx:if="{{message.roomId}}">
             <text class="icon">🏫</text>
-            <text class="info-text-title">Room</text>
+            <view>
+              <text class="info-text-title">Room:</text>
+              <view class="info-text">{{rooms[message.roomId-1].roomName}}</view>
+            </view>
           </view>
-          <view class="info-text-user" wx:if="{{message.roomId}}">{{rooms[message.roomId-1].roomName}}</view>
           <view class="info-row">
             <text class="icon">📃</text>
             <text class="info-text-title">Details</text>
