@@ -338,7 +338,6 @@ Page({
   switchDate(e) {
     const date = e.currentTarget.dataset.date;
     this.setData({ activeDate: date }, () => this.updateSchedule());
-    console.log(this.data.activeDate);
   },
 
   // 预约处理

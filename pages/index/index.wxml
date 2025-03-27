@@ -1,7 +1,19 @@
-<view class="home-title">
-  <image class="logo" src="../../assets/images/logo.png" mode="aspectFit"></image>
-  <text class="title-text">Classroom <br /> Reservation</text>
-</view>
+<swiper class="home-swiper" autoplay circular interval="4000" indicator-dots indicator-color="rgba(255,255,255,0.4)" indicator-active-color="#ffffff">
+  <swiper-item>
+    <view class="home-title">
+      <image class="logo" src="../../assets/images/logo.png" mode="aspectFit"></image>
+      <text class="title-text">Classroom <br /> Reservation</text>
+    </view>
+  </swiper-item>
+
+  <swiper-item>
+    <image src="../../assets/images/banner2.png" class="swiper-img"></image>
+  </swiper-item>
+
+  <swiper-item>
+    <image src="../../assets/images/banner1.jpg" class="swiper-img"></image>
+  </swiper-item>
+</swiper>
 
 <view class="container">
   <view class="select-container">
