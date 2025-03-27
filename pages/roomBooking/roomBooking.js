@@ -28,7 +28,6 @@ Page({
 
     if (bookingData) {
       const { selectedDate, room, schedule } = bookingData;
-
       // 存储完整的 schedule 数据
       this.setData({
         selectedDate,

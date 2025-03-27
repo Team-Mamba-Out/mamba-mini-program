@@ -227,6 +227,18 @@
   font-style: italic;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+.overlay1{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  background-color: rgba(63, 62, 62, 0.5); /* 半透明背景 */
+  z-index: 2;
+}
 .overlay {
   position: fixed;
   top: 0;
@@ -273,6 +285,10 @@
   transition: all 0.3s ease-in-out;
   box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
   position: relative;
+}
+.unclickable-view {
+  pointer-events: none; /* 禁止点击事件 */
+  opacity: 0.6; /* 如果需要提示用户这个元素不可交互，可以设置透明度 */
 }
 
 .tag.active {

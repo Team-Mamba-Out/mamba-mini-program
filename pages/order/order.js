@@ -6,7 +6,14 @@ Page({
    * 页面的初始数据
    */
   data: {
-    cancelId:null,
+    scheduleData: null,
+    allowedSlots: [false, false, false, true],
+    extendId: null,
+    newEndTime: null,
+    showExtend: false,
+    extendSlot: null,
+    extendSlots: ['0.5 Hour', '1 Hour', '1.5 Hours', '2 Hours'],
+    cancelId: null,
     activeType: null,
     submitLoading: false,
     typeLabels: ['Plan change', 'Equipment failure', 'Operational error', 'Emergency situation', 'Other'],
@@ -26,6 +33,34 @@ Page({
     total: 0,
     totalMessage: null
   },
+  submit1() {
+    let extendTime = this.data.extendSlot
+    const originalTime = new Date(this.data.newEndTime);
+    const minutesToAdd = [30, 60, 90, 120][extendTime] || 0;
+    originalTime.setMinutes(originalTime.getMinutes() + minutesToAdd);
+    const newEndTime = new Date(originalTime.getTime() + 8 * 3600 * 1000) // UTC 转北京时间
+      .toISOString()
+      .slice(0, 19);
+    wx.request({
+      url: `http://${app.globalData.baseUrl}:8080/records/extend`,
+      method: 'Post',
+      data: {
+        id: this.data.extendId,
+        endTime: newEndTime
+      },
+      success: (res) => {
+        this.setData({
+          pageNum: 1,
+          records: [],
+          selectedOrderType: 'All',
+          showExtend: false,
+          extendId: null,
+          newEndTime: null
+        })
+        this.getRecord()
+      }
+    })
+  },
   submit() {
     const { activeType, content, } = this.data;
     console.log(activeType);
@@ -39,11 +74,11 @@ Page({
       return;
     }
     let reasonId = activeType + 1
-    let reason = reasonId+';'+content
+    let reason = reasonId + ';' + content
     wx.request({
       url: `http://${app.globalData.baseUrl}:8080/records/cancel`,
       method: 'PUT',
-      data: { id:this.data.cancelId, reason},
+      data: { id: this.data.cancelId, reason },
       header: {
         'content-type': 'application/x-www-form-urlencoded'
       },
@@ -66,13 +101,19 @@ Page({
             this.setData({
               userInfo,
               showCancel: !this.data.showCancel,
-              content:''
+              content: ''
             })
             wx.setStorageSync('userInfo', userInfo)
           }
         })
       }
     })
+  },
+  selectType1(e) {
+    const index = parseInt(e.currentTarget.dataset.index);
+    this.setData({
+      extendSlot: this.data.extendSlot === index ? null : index
+    });
   },
   selectType(e) {
     const index = parseInt(e.currentTarget.dataset.index);
@@ -82,6 +123,258 @@ Page({
   },
   onContentChange(e) {
     this.setData({ content: e.detail.value });
+  },
+  // 从后端加载并转换日程数据
+  loadScheduleDataFromBackend(roomId) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `http://${app.globalData.baseUrl}:8080/rooms/getBusyTime?id=${roomId}`,
+        method: 'GET',
+        success: (res) => {
+          if (res.data.code === 200) {
+            const roomRecordPeriods = res.data.data;
+            const scheduleData = this.processScheduleData(roomRecordPeriods);
+            this.setData({
+              scheduleData: scheduleData
+            });
+            resolve();  // 成功时调用 resolve
+          } else {
+            console.error('Failed to load room schedule data.', res);
+            reject('Failed to load schedule data');  // 错误时调用 reject
+          }
+        },
+        fail: (err) => {
+          console.error('Request failed', err);
+          reject(err);  // 请求失败时调用 reject
+        }
+      });
+    });
+  },
+  processMaintenanceData(maintenancePeriods) {
+    const maintenanceData = {};
+
+    maintenancePeriods.forEach(period => {
+      const start = new Date(period.startTime);  // 将时间字符串转换为 Date 对象
+      const end = new Date(period.endTime);
+
+      // 如果 start 和 end 不是有效的 Date 对象，跳过
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        console.error('Invalid date:', period);
+        return;
+      }
+
+      // 格式化日期和时间
+      const dateKey = start.toISOString().split('T')[0];  // 'yyyy-mm-dd'
+      const startTime = this.formatTime(start);
+      const endTime = this.formatTime(end);
+
+      // 确保日期的条目存在
+      if (!maintenanceData[dateKey]) {
+        maintenanceData[dateKey] = [];
+      }
+
+      // 添加维修时间到对应日期的数据，标题为 'Repair'
+      maintenanceData[dateKey].push({
+        startTime: startTime,
+        endTime: endTime,
+        status: 'busy',
+        title: 'Repairing'
+      });
+    });
+
+    return maintenanceData;
+  },
+  loadMaintenanceDataFromBackend(roomId) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `http://${app.globalData.baseUrl}:8080/rooms/getMaintenance?id=${roomId}`,
+        method: 'GET',
+        success: (res) => {
+          if (res.data.code === 200) {
+            const maintenancePeriods = res.data.data;
+            const maintenanceData = this.processMaintenanceData(maintenancePeriods);
+            // 合并维修时间和日程数据
+            const combinedScheduleData = { ...this.data.scheduleData };
+            console.log(combinedScheduleData);
+            for (const dateKey in maintenanceData) {
+              if (!combinedScheduleData[dateKey]) {
+                combinedScheduleData[dateKey] = [];
+              }
+              combinedScheduleData[dateKey] = this.mergeSchedules(
+                combinedScheduleData[dateKey],
+                maintenanceData[dateKey]
+              );
+            }
+            console.log(combinedScheduleData);
+            this.setData({
+              scheduleData: combinedScheduleData,
+              maintenanceData: maintenanceData, // 保存维修数据
+            });
+            resolve();  // 成功时调用 resolve
+          } else {
+            console.error('Failed to load maintenance schedule data.', res);
+            reject('Failed to load maintenance data');  // 错误时调用 reject
+          }
+        },
+        fail: (err) => {
+          console.error('Request failed', err);
+          reject(err);  // 请求失败时调用 reject
+        }
+      });
+    });
+  },
+  mergeSchedules(existingSchedules, newSchedules) {
+    const mergedSchedules = [...existingSchedules];
+
+    // 将新的维修时间段添加到已有的日程中
+    newSchedules.forEach(newSchedule => {
+      // 检查是否已经存在相同时间段，避免重复
+      const isDuplicate = mergedSchedules.some(schedule =>
+        schedule.startTime === newSchedule.startTime && schedule.endTime === newSchedule.endTime
+      );
+
+      if (!isDuplicate) {
+        mergedSchedules.push(newSchedule);  // 不重复的就添加进去
+        console.log(newSchedule);
+      }
+    });
+    return mergedSchedules;
+  },
+  async loadData(roomId) {
+    try {
+      // 等待 schedule 和 maintenance 数据加载完成
+      await this.loadScheduleDataFromBackend(roomId);
+      await this.loadMaintenanceDataFromBackend(roomId);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
+  },
+  formatTime(date) {
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+  },
+  processScheduleData(roomRecordPeriods) {
+    const scheduleData = {};
+
+    roomRecordPeriods.forEach(recordPeriod => {
+      // 确保转换时间为 Date 对象
+      const start = new Date(recordPeriod.startTime);  // 将时间字符串转换为 Date 对象
+      const end = new Date(recordPeriod.endTime);
+
+      // 如果 start 和 end 不是有效的 Date 对象，跳过
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        console.error('Invalid date:', recordPeriod);
+        return;
+      }
+
+      // 格式化日期和时间
+      const dateKey = start.toISOString().split('T')[0];  // 'yyyy-mm-dd'
+      const startTime = this.formatTime(start);
+      const endTime = this.formatTime(end);
+
+      // 根据 uid 来判断日程标题
+      let title = 'Reserved';  // 默认值为 'reserved'
+      if (recordPeriod.uid === 1) {
+        title = 'Class';
+      }
+
+      // 确保日期的条目存在
+      if (!scheduleData[dateKey]) {
+        scheduleData[dateKey] = [];
+      }
+
+      // 添加到对应日期的数据
+      scheduleData[dateKey].push({
+        startTime: startTime,
+        endTime: endTime,
+        status: 'busy',
+        title: title
+      });
+    });
+
+    return scheduleData;
+  },
+  loadScheduleDataFromBackend(roomId) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `http://${app.globalData.baseUrl}:8080/rooms/getBusyTime?id=${roomId}`,
+        method: 'GET',
+        success: (res) => {
+          if (res.data.code === 200) {
+            const roomRecordPeriods = res.data.data;
+            const scheduleData = this.processScheduleData(roomRecordPeriods);
+            this.setData({
+              scheduleData: scheduleData
+            });
+            resolve();  // 成功时调用 resolve
+          } else {
+            console.error('Failed to load room schedule data.', res);
+            reject('Failed to load schedule data');  // 错误时调用 reject
+          }
+        },
+        fail: (err) => {
+          console.error('Request failed', err);
+          reject(err);  // 请求失败时调用 reject
+        }
+      });
+    });
+  },
+  async extend(e) {
+    let endTime = new Date(e.currentTarget.dataset.item.endTime);
+    let tenPM = new Date(endTime);
+    tenPM.setHours(22, 0, 0, 0);
+    const durations = [30, 60, 90, 120];
+    const allowedSlots = durations.map(minute => {
+      let tempTime = new Date(endTime.getTime() + minute * 60000);
+      return tempTime <= tenPM;
+    });
+
+    await this.loadData(e.currentTarget.dataset.item.roomId);
+    //获取今天的繁忙时间
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${year}-${month}-${day}`;
+    const todaySchedule = this.data.scheduleData[todayStr] || []
+    //重新获取endTime小于这些时间中的开始时间的
+    console.log(todaySchedule);
+    const filteredSchedule = todaySchedule.filter(item => {
+      const yearTemp = endTime.getFullYear();
+      const monthTemp = endTime.getMonth();
+      const dayTemp = endTime.getDate();
+      // item.startTime 是 "HH:mm" 格式
+      const [hours, minutes] = item.startTime.split(':').map(Number);
+      // 构造一个新的 Date 对象，表示今天的这个 startTime
+      const startTime = new Date(yearTemp, monthTemp, dayTemp, hours, minutes);
+      return startTime >= endTime;
+    });
+    console.log(filteredSchedule);
+    durations.forEach((duration, index) => {
+      // 当前延长后的时间
+      const extendedTime = new Date(endTime.getTime() + duration * 60000);
+      // 遍历 filteredSchedule，如果有任何一个排程开始时间 < extendedTime，则不允许
+      for (let item of filteredSchedule) {
+        const yearTemp = endTime.getFullYear();
+        const monthTemp = endTime.getMonth();
+        const dayTemp = endTime.getDate();
+        const [hours, minutes] = item.startTime.split(':').map(Number);
+        const startTime = new Date(yearTemp, monthTemp, dayTemp, hours, minutes);
+        if (extendedTime > startTime) {
+          allowedSlots[index] = false;
+          break; // 已经冲突，没必要再看更多
+        }
+      }
+    });
+
+    this.setData({
+      showExtend: true,
+      extendId: e.currentTarget.dataset.item.id,
+      newEndTime: e.currentTarget.dataset.item.endTime,
+      allowedSlots
+    })
+
   },
   checkIn(e) {
     let id = e.currentTarget.dataset.item.id
@@ -105,7 +398,12 @@ Page({
   closePreview() {
     this.setData({
       showCancel: !this.data.showCancel,
-      content:''
+      content: ''
+    })
+  },
+  closePreview1() {
+    this.setData({
+      showExtend: !this.data.showExtend
     })
   },
   // 显示排序选项
@@ -190,7 +488,7 @@ Page({
           console.log(id);
           this.setData({
             showCancel: true,
-            cancelId:id
+            cancelId: id
           })
         }
       }
