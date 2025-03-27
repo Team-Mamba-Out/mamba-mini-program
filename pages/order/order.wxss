@@ -54,7 +54,6 @@
   font-weight: bold;
 }
 .due-badge {
-  font-size: 12px;
   width: 60px;
   color: white;
   font-weight: bold;
@@ -80,9 +79,20 @@
   font-size: 11px;
   color:#726f6f;
 }
+.not-started{
+  padding:6px 3px;
+  background: #684edf;
+  font-size: 10px;
+}
+.approval{
+  padding:2px 3px;
+  background: #684edf;
+  font-size: 9px;
+}
 .due {
   padding:4px 3px;
   background: #684edf;
+  font-size: 12px;
 }
 .info-wrap{
   display: flex;
@@ -90,6 +100,7 @@
 .paid {
   padding:4px 3px;
   background: gray;
+  font-size: 12px;
 }
 
 .location {

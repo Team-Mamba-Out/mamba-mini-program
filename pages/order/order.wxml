@@ -20,34 +20,35 @@
             <text class="location">{{item.correspondingRoom.location}}</text>
           </view>
           <view class="status-wrap">
-            <view class="due-badge {{item.status!='Pending' & item.status!='Ongoing' ? 'paid' : 'due'}}">
-
-              <text wx:if="{{!item.approved && item.status === 'Pending'}}">Waiting</text>
-              <text wx:if="{{item.approved}}">{{item.status}}</text>
-
+            <view wx:if="{{!item.approved && item.status === 'Cancelled' || item.approved }}" class="due-badge {{item.status==='Not Started' ? 'not-started':item.status=='Ongoing' ? 'due' : 'paid'}}">
+              <text >{{item.status}}</text>
             </view>
+            <view wx:if="{{!item.approved && item.status === 'Not Started'}}" class="due-badge approval">
+              <text>Pending Approval</text>
+            </view>
+
             <view class="date-wrap">
               <view class="date1">{{item.day}}</view>
               <view class="date2">{{item.month}}</view>
             </view>
           </view>
         </view>
-        <view class="{{item.status=='Pending' | item.status=='Ongoing'? 'time-wrap-due':'time-wrap'}}">
+        <view class="{{item.status=='Not Started' | item.status=='Ongoing'? 'time-wrap-due':'time-wrap'}}">
           <view class="start-wrap">
-            <view class="time {{item.status=='Pending' | item.status=='Ongoing'? 'time-due':'' }}">{{item.startTimeNoS}}</view>
-            <view class="date {{item.status=='Pending' | item.status=='Ongoing'? 'date-due':'' }}">{{item.startDate}}</view>
+            <view class="time {{item.status=='Not Started' | item.status=='Ongoing'? 'time-due':'' }}">{{item.startTimeNoS}}</view>
+            <view class="date {{item.status=='Not Started' | item.status=='Ongoing'? 'date-due':'' }}">{{item.startDate}}</view>
           </view>
           <view class="bridge-wrap">
-            <view class="total-time {{item.status=='Pending' | item.status=='Ongoing'? 'date-due':'' }}">
+            <view class="total-time {{item.status=='Not Started' | item.status=='Ongoing'? 'date-due':'' }}">
               {{item.totalTime}} in total
             </view>
-            <view class="bridge {{item.status=='Pending' | item.status=='Ongoing'? 'time-due':'' }}">
+            <view class="bridge {{item.status=='Not Started' | item.status=='Ongoing'? 'time-due':'' }}">
               ···················
             </view>
           </view>
           <view class="start-wrap">
-            <view class="time {{item.status=='Pending' | item.status=='Ongoing' ? 'time-due':'' }}">{{item.endTimeNoS}}</view>
-            <view class="date {{item.status=='Pending' | item.status=='Ongoing' ? 'date-due':'' }}">{{item.endDate}}</view>
+            <view class="time {{item.status=='Not Started' | item.status=='Ongoing' ? 'time-due':'' }}">{{item.endTimeNoS}}</view>
+            <view class="date {{item.status=='Not Started' | item.status=='Ongoing' ? 'date-due':'' }}">{{item.endDate}}</view>
           </view>
         </view>
         <view class="amount-wrap">
