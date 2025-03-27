@@ -30,10 +30,8 @@ Page({
       this.setData({ isLoading: true }); // 设置为加载中状态
 
       // 等待 schedule 和 maintenance 数据加载完成
-      await Promise.all([
-        this.loadScheduleDataFromBackend(roomId),
-        this.loadMaintenanceDataFromBackend(roomId)
-      ]);
+      await this.loadScheduleDataFromBackend(roomId);
+      await this.loadMaintenanceDataFromBackend(roomId);
 
       this.updateSchedule();  // 确保两个数据都加载完后再更新日程
       this.setData({ isLoading: false }); // 数据加载完成，设置为已加载状态

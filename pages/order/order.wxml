@@ -59,6 +59,7 @@
           <view class="actions">
             <button wx:if="{{item.status!='Done' & item.status !='Overdue' & item.status!='Cancelled'}}" bind:tap="cancel" data-item="{{item}}" class="cancel-btn">Cancel</button>
             <button wx:if="{{item.allowCheckIn && item.status !='Cancelled'}}" bind:tap="checkIn" data-item="{{item}}" class="check-in-btn">Check in</button>
+            <button wx:if="{{item.status =='Ongoing'}}"  data-item="{{item}}" class="check-in-btn" bind:tap="extend">Extend</button>
             <text wx:if="{{item.status=='Done' & item.hasCheckedIn}}" class="paid-text">✔ Finished</text>
             <text wx:if="{{item.status=='Overdue'}}" class="overdue-text">❌ Overdue</text>
           </view>
@@ -67,6 +68,24 @@
     </block>
   </view>
 </view>
+<view wx:if="{{showExtend}}" class="overlay1" catchtap="closePreview1">
+</view>
+<view wx:if="{{showExtend}}" class="preview-container" catchtap="">
+  <view class="section">
+    <text class="section-title">Extend Options</text>
+    <view class="tag-container">
+      <view wx:for="{{extendSlots}}" wx:key="index" class="tag {{allowedSlots[index]?'':'unclickable-view'}} {{extendSlot === index ? 'active' : ''}}" data-index="{{index}}" catchtap="selectType1">
+        {{item}}
+      </view>
+    </view>
+  </view>
+  
+  <view class="submit-container">
+    <button class="submit-btn" bindtap="submit1" loading="{{submitLoading}}">Submit</button>
+  </view>
+</view>
+
+
 <view wx:if="{{showCancel}}" class="overlay" catchtap="closePreview">
 </view>
 <view wx:if="{{showCancel}}" class="preview-container" catchtap="">
