@@ -16,7 +16,7 @@ Page({
     selectedOrderType: "All",
     selectedTimeType: "Default",
     TimeTypes: ["Default", "Booking Time", "Order Time"],
-    orderTypes: ["All", "Pending", "Ongoing", "Done", "Cancelled", "Overdue"],
+    orderTypes: ["All", "Not Started", "Ongoing", "Done", "Cancelled", "Overdue"],
     active: 'order',
     rooms: ["Teaching Room", "Activity Room", "Meeting Room"],
     records: [],
@@ -180,8 +180,8 @@ Page({
    */
   cancel(e) {
     wx.showModal({
-      title: 'Cancel Confirm',
-      content: `Cancelling three times will be marked`,
+      title: 'Warning!',
+      content: `Cancelling four times will be marked if you are a student`,
       cancelText: 'Cancel',
       confirmText: 'Confirm',
       success: (res) => {

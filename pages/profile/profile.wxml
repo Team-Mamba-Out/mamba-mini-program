@@ -49,10 +49,10 @@
     <van-icon name="phone" color="#674ed4" size="20px" />
     <text class="label">Phone</text>
     <block wx:if="{{isEditing}}">
-      <input class="info-input" bindinput="handleInput" data-field="phone" value="{{userInfo.phone}}" />
+      <input class="info-input" bindinput="handleInput" placeholder="please enter your phone" data-field="phone" value="{{userInfo.phone}}" />
     </block>
     <block wx:else>
-      <text class="info-value">{{userInfo.phone}}</text>
+      <text class="info-value">{{userInfo.phone===null?'': userInfo.phone}}</text>
     </block>
   </view>
   <view wx:if="{{userInfo.role==='Student'}}" class="info-item">
