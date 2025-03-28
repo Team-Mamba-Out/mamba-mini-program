@@ -1,4 +1,5 @@
 const app = getApp();
+import Toast from '@vant/weapp/toast/toast';
 
 Page({
   data: {
@@ -146,17 +147,11 @@ Page({
             app.globalData.unread = unreadCount;
             console.log(app.globalData.unread);
           } else {
-            wx.showToast({
-              title: 'Failed to load unread messages',
-              icon: 'none'
-            });
+            Toast.fail('Failed to load unread messages');
           }
         },
         fail: (err) => {
-          wx.showToast({
-            title: 'Network error',
-            icon: 'none'
-          });
+          Toast.fail('Network error');
         }
       });
     }
@@ -184,11 +179,7 @@ Page({
     const roomsString = JSON.stringify(rooms);
     const userId = this.data.userInfo.uid;
     if (this.data.userInfo.breakTimer >= 4) {
-      wx.showToast({
-        title: 'You have been banned this month due to misconduct!',
-        icon: 'none',
-        duration: 2000
-      })
+      Toast('You have been banned this month due to misconduct!');
       return
     }
     // 调用后端接口判断是否有权限
@@ -201,21 +192,11 @@ Page({
             url: '/pages/roomDetails/roomDetails?id=' + roomId + '&rooms=' + encodeURIComponent(roomsString)
           });
         } else {
-          // 如果没有权限，弹出提示
-          wx.showToast({
-            title: 'You do not have permission to access!',
-            icon: 'none',
-            duration: 2000
-          });
+          Toast('You do not have permission to access!');
         }
       },
       fail: (err) => {
-        // 请求失败时的处理
-        wx.showToast({
-          title: 'Request failed, please retry later.',
-          icon: 'none',
-          duration: 2000
-        });
+        Toast.fail('Request failed, please retry later.');
       }
     });
   },
@@ -257,10 +238,7 @@ Page({
   // 显示结束时间选择器
   showEndDateTimePicker() {
     if (!this.data.startDateTime) {
-      wx.showToast({
-        title: '请先选择开始时间',
-        icon: 'none'
-      });
+      Toast('Please choose start time first!');
       return;
     }
 

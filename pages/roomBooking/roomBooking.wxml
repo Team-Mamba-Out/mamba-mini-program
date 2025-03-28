@@ -1,3 +1,4 @@
+<van-toast id="van-toast" />
 <view class="book-heading">Choose Booking Slots</view>
 
 <!-- pages/booking/booking.wxml -->

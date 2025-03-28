@@ -1,5 +1,6 @@
 const app = getApp();
-// pages/login/login.js
+import Toast from '@vant/weapp/toast/toast';
+
 Page({
 
   /**
@@ -30,11 +31,8 @@ Page({
   },
   phoneLogin() {
     if (!this.data.isAgreed) {
-      wx.showToast({
-        title: 'Please agree to the privacy policy before logging in.',
-        icon: 'none',
-      });
-      return;  // 阻止继续执行登录逻辑
+      Toast.fail('Please agree to the privacy policy before logging in.');
+      return;  
     }
     let code = this.data.code
     let email = this.data.email
@@ -44,10 +42,7 @@ Page({
       method:'GET',
       success:(res)=>{
         if (res.data.code != 200) {
-          wx.showToast({
-            icon:'error',
-            title: 'Invalid Code!',
-          })
+          Toast.fail('Invalid Code!');
           return
         }
         let token = res.data.data
@@ -63,22 +58,15 @@ Page({
           method: 'GET',
           success: (res) => {
             if (res.data.code != 200) {
-              wx.showToast({
-                icon: 'error',
-                title: 'Invalid Input!',
-              })
+              Toast.fail('Invalid Input!');
               return
             }
             let userInfo = res.data.data
             this.setData({
               userInfo
             })
-            wx.setStorageSync('userInfo', userInfo)
-            wx.showToast({
-              title: 'Login Successfully!',
-              icon: "success",
-              duration: 2000
-            })
+            wx.setStorageSync('userInfo', userInfo);
+            Toast.success('Login Successfully!');
             let url = '/pages/' + this.data.url + '/' + this.data.url
             wx.switchTab({
               url: url,
@@ -93,19 +81,13 @@ Page({
 
     // 如果没有输入有效的邮箱
     if (!email) {
-      wx.showToast({
-        title: 'Invalid Email',
-        icon: 'error',
-      });
+      Toast.fail('Invalid Email!');
       return;
     }
 
     // 如果当前正在倒计时，不能再次点击
     if (this.data.isCounting) {
-      wx.showToast({
-        title: 'Please wait',
-        icon: 'none',
-      });
+      Toast('Please wait!');
       return;
     }
 

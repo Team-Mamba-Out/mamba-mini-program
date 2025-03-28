@@ -103,8 +103,6 @@ Page({
       roomId: roomId
     };
 
-    console.log(messageData);
-
     this.setData({ loading: true });
 
     wx.request({
@@ -126,7 +124,7 @@ Page({
         }
       },
       fail: (err) => {
-        wx.showToast({ title: 'Network error, please try again later.', icon: 'none' });
+        wx.showToast({ title: 'Network error.', icon: 'none' });
       },
       complete: () => {
         this.setData({ loading: false });  
