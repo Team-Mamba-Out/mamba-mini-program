@@ -1,3 +1,5 @@
+<van-toast id="van-toast" />
+
 <view class="container">
   <view class="logo">
     <image src="/img/logo.jpg" mode="aspectFit" style="width: 110px; height: 110px; margin-top: 20rpx;"></image>

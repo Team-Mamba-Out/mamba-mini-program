@@ -1,3 +1,5 @@
+<van-toast id="van-toast" />
+
 <view class="order-filter">
   <view bindtap="showOrderFilter" class="filter-wrap line1">
     <view class="filter1">{{ selectedOrderType }}</view>

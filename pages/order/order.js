@@ -1,5 +1,6 @@
 const app = getApp();
-// pages/record/record.js
+import Toast from '@vant/weapp/toast/toast';
+
 Page({
 
   /**
@@ -65,12 +66,12 @@ Page({
     const { activeType, content, } = this.data;
     console.log(activeType);
     if (activeType === null) {
-      wx.showToast({ title: 'Please select message type', icon: 'none' });
+      Toast.fail('Please select message type');
       return;
     }
 
     if (!content.trim()) {
-      wx.showToast({ title: 'Please enter content', icon: 'none' });
+      Toast.fail('Please enter content');
       return;
     }
     let reasonId = activeType + 1

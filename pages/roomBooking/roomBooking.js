@@ -1,4 +1,5 @@
 const app = getApp();
+import Toast from '@vant/weapp/toast/toast';
 Page({
   /**
    * 页面的初始数据
@@ -177,7 +178,7 @@ Page({
     const endMinutes = this.timeToMinutes(this.data.endTime);
 
     if (endMinutes <= startMinutes) {
-      wx.showToast({ title: 'The end time must be after start time!', icon: 'none', duration: 1500 });
+      Toast('The end time must be after start time!');
       this.setData({
         startTime: null,
         endTime: null,
@@ -216,7 +217,7 @@ Page({
 
     // 如果有冲突，则清空之前的选择并提示
     if (conflict) {
-      wx.showToast({ title: 'The selected time period has conflict!', icon: 'none' });
+      Toast('The selected time period has conflict!');
       this.setData({
         startTime: null,
         endTime: null,
@@ -232,7 +233,7 @@ Page({
 
   handleSubmit() {
     if (this.data.selectedSlots.length === 0) {
-      wx.showToast({ title: 'Please choose a valid time duration!', icon: 'none' });
+      Toast('Please choose a valid time duration!');
       return;
     }
 
@@ -258,7 +259,7 @@ Page({
       success: (res) => {
         console.log(res);
         if (res.statusCode === 200) {
-          wx.showToast({ title: 'Booking Successfully!', icon: 'success' });
+          Toast.success('Booking Successfully!');
           wx.navigateBack({
             delta: 1,
             success: () => {
@@ -266,15 +267,14 @@ Page({
             }
           });
           if (res.data.code === 500) {
-            wx.showToast({ title: 'Occupied Successfully! Please wait for approval.', icon: 'success' });
+            Toast.success('Occupied Successfully! Please wait for approval.');
           }
         } else {
-          wx.showToast({ title: 'Booking Failed.', icon: 'none' });
+          Toast.fail('Booking Failed.');
         }
       },
       fail: (err) => {
-        wx.showToast({ title: '请求失败', icon: 'none' });
-        console.error('Request failed', err);
+        Toast.fail('Network Error.');
       },
       complete: () => {
         wx.hideLoading();
